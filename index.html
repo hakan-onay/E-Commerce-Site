@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikSepet | Anasayfa</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+  <body>
+    <div id="loader">Yükleniyor...</div>
+
+    <header>
+      <nav class="navbar">
+        <!-- Logo -->
+        <a href="index.html" class="logo">
+          <img src="assets/images/logo_light.png" alt="TıkSepet" id="site-logo" />
+        </a>
+
+        <!-- Menü -->
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li><a href="cart.html">Sepet</a></li>
+          <li><a href="profile.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+
+        <!-- Tema butonu -->
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+
+        <!-- Mobil menü -->
+        <div class="nav-toggle" onclick="toggleMenu()">
+          <span></span><span></span><span></span>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h1>Hoş Geldiniz</h1>
+        <p>Kaliteli ürünleri en iyi fiyatlarla keşfedin.</p>
+        <a href="products.html" class="btn">Alışverişe Başla</a>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 TikSepet E-Ticaret</p>
+    </footer>
+
+    <script>
+      // Menü
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+      }
+
+      // Tema geçişi
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
+        const theme = document.body.classList.contains("dark") ? "dark" : "light";
+        localStorage.setItem("theme", theme);
+        updateLogo(theme);
+      }
+
+      // Logo güncelleme
+      function updateLogo(theme) {
+        const logo = document.getElementById("site-logo");
+        logo.src = theme === "dark"
+          ? "assets/images/logo_dark.png"
+          : "assets/images/logo_light.png";
+      }
+
+      // Sayfa yüklendiğinde temayı ve logoyu uygula
+      window.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        if (savedTheme === "dark") document.body.classList.add("dark");
+        updateLogo(savedTheme);
+      });
+
+      // Loader
+      window.addEventListener("load", () => {
+        document.getElementById("loader").style.display = "none";
+      });
+    </script>
+  </body>
+</html>
