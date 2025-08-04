@@ -14,7 +14,11 @@
       <nav class="navbar">
         <!-- Logo -->
         <a href="index.html" class="logo">
-          <img src="assets/images/logo_light.png" alt="TıkSepet" id="site-logo" />
+          <img
+            src="assets/images/logo_light.png"
+            alt="TıkSepet"
+            id="site-logo"
+          />
         </a>
 
         <!-- Menü -->
@@ -38,17 +42,37 @@
 
     <main>
       <section class="hero">
-        <h1>Hoş Geldiniz</h1>
-        <p>Kaliteli ürünleri en iyi fiyatlarla keşfedin.</p>
-        <a href="products.html" class="btn">Alışverişe Başla</a>
+        <div class="hero-overlay">
+          <h1>Hoş Geldiniz</h1>
+          <p>Kaliteli ürünleri en iyi fiyatlarla keşfedin.</p>
+          <a href="products.html" class="btn">Alışverişe Başla</a>
+        </div>
       </section>
     </main>
 
     <footer>
-      <p>&copy; 2025 TikSepet E-Ticaret</p>
+      <div class="footer-content">
+        <img
+          src="assets/images/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi</p>
+      </div>
     </footer>
 
     <script>
+      // Footer logo güncelleme
+      function updateFooterLogo() {
+        const footerLogo = document.getElementById("footer-logo");
+        if (document.body.classList.contains("dark")) {
+          footerLogo.src = "assets/images/logo_light.png";
+        } else {
+          footerLogo.src = "assets/images/logo_dark.png";
+        }
+      }
+
       // Menü
       function toggleMenu() {
         document.getElementById("navLinks").classList.toggle("active");
@@ -57,24 +81,32 @@
       // Tema geçişi
       function toggleTheme() {
         document.body.classList.toggle("dark");
-        const theme = document.body.classList.contains("dark") ? "dark" : "light";
+        const theme = document.body.classList.contains("dark")
+          ? "dark"
+          : "light";
         localStorage.setItem("theme", theme);
-        updateLogo(theme);
+
+        updateFooterLogo(); // Alt logo güncelle
+        updateLogo(theme); // Üst logo güncelle
       }
 
       // Logo güncelleme
       function updateLogo(theme) {
         const logo = document.getElementById("site-logo");
-        logo.src = theme === "dark"
-          ? "assets/images/logo_dark.png"
-          : "assets/images/logo_light.png";
+        logo.src =
+          theme === "dark"
+            ? "assets/images/logo_light.png"
+            : "assets/images/logo_dark.png";
       }
 
       // Sayfa yüklendiğinde temayı ve logoyu uygula
       window.addEventListener("DOMContentLoaded", () => {
-        const savedTheme = localStorage.getItem("theme") || "light";
-        if (savedTheme === "dark") document.body.classList.add("dark");
-        updateLogo(savedTheme);
+        const savedTheme = localStorage.getItem("theme");
+        const theme = savedTheme === "dark" ? "dark" : "light";
+        if (theme === "dark") document.body.classList.add("dark");
+
+        updateFooterLogo(); // Alt logo
+        updateLogo(theme); // Üst logo
       });
 
       // Loader
