@@ -15,7 +15,7 @@
         <!-- Logo -->
         <a href="index.html" class="logo">
           <img
-            src="assets/images/logo_light.png"
+            src="assets/images/logos/logo_light.png"
             alt="TıkSepet"
             id="site-logo"
           />
@@ -49,16 +49,16 @@
         </div>
       </section>
     </main>
-
+    
     <footer>
       <div class="footer-content">
         <img
-          src="assets/images/logo_light.png"
+          src="assets/images/logos/logo_light.png"
           alt="TikSepet Logo"
           id="footer-logo"
           class="footer-logo"
         />
-        <p>&copy; 2025 TikSepet E-Ticaret Sitesi</p>
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
       </div>
     </footer>
 
@@ -67,9 +67,9 @@
       function updateFooterLogo() {
         const footerLogo = document.getElementById("footer-logo");
         if (document.body.classList.contains("dark")) {
-          footerLogo.src = "assets/images/logo_light.png";
+          footerLogo.src = "assets/images/logos/logo_dark.png";
         } else {
-          footerLogo.src = "assets/images/logo_dark.png";
+          footerLogo.src = "assets/images/logos/logo_light.png";
         }
       }
 
@@ -86,8 +86,8 @@
           : "light";
         localStorage.setItem("theme", theme);
 
-        updateFooterLogo(); // Alt logo güncelle
-        updateLogo(theme); // Üst logo güncelle
+        updateFooterLogo(); 
+        updateLogo(theme); 
       }
 
       // Logo güncelleme
@@ -95,8 +95,8 @@
         const logo = document.getElementById("site-logo");
         logo.src =
           theme === "dark"
-            ? "assets/images/logo_light.png"
-            : "assets/images/logo_dark.png";
+            ? "assets/images/logos/logo_dark.png"
+            : "assets/images/logos/logo_light.png";
       }
 
       // Sayfa yüklendiğinde temayı ve logoyu uygula
@@ -114,5 +114,6 @@
         document.getElementById("loader").style.display = "none";
       });
     </script>
+
   </body>
 </html>
