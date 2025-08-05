@@ -116,6 +116,7 @@
         if (savedTheme === "dark") document.body.classList.add("dark");
         updateFooterLogo();
         updateLogo(savedTheme);
+        updateCartTotal(); // Sayfa yüklendiğinde toplamı göster
       });
 
       // Yükleme ekranını kapat
@@ -151,24 +152,28 @@
 
         // Sepet toplamını güncelle
         function updateCartTotal() {
-          const items = document.querySelectorAll(".cart-item");
           let total = 0;
 
-          items.forEach((item) => {
-            const price = parseFloat(item.dataset.price);
+          // Tüm sepet ürünlerini al
+          const cartItems = document.querySelectorAll(".cart-item");
+
+          cartItems.forEach((item) => {
+            const price = parseFloat(item.getAttribute("data-price"));
             const quantity = parseInt(
               item.querySelector(".item-qty").textContent
             );
             total += price * quantity;
           });
 
+          // Türk lirası formatında göster
           const formattedTotal = total.toLocaleString("tr-TR", {
             style: "currency",
             currency: "TRY",
           });
 
-          document.getElementById("cart-total").textContent =
-            "Toplam: " + formattedTotal;
+          document.getElementById(
+            "cart-total"
+          ).textContent = `Toplam: ${formattedTotal}`;
         }
       });
     </script>
