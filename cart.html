@@ -8,12 +8,18 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
   </head>
   <body>
+    <!-- Yükleniyor göstergesi -->
     <div id="loader">Yükleniyor...</div>
 
+    <!-- Üst navigasyon -->
     <header>
       <nav class="navbar">
         <a href="index.html" class="logo">
-          <img src="assets/images/logos/logo_light.png" alt="TikSepet" id="site-logo" />
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
         </a>
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Anasayfa</a></li>
@@ -29,59 +35,141 @@
       </nav>
     </header>
 
+    <!-- Ana içerik alanı -->
     <main>
       <div class="cart-container">
         <h1 class="cart-title">Sepetim</h1>
         <div id="cart-items">
-          <!-- JS ile ürünler buraya eklenecek -->
+          <!-- Sepet öğesi örneği -->
+          <div class="cart-item" data-price="29999">
+            <img src="assets/images/products/product2.jpg" alt="Kulaklık" />
+            <div class="cart-item-info">
+              <div class="cart-item-title">Kulaklık</div>
+              <div class="cart-item-price">₺29.999,00</div>
+            </div>
+            <div class="cart-item-quantity">
+              <button class="qty-btn decrease">−</button>
+              <span class="item-qty">1</span>
+              <button class="qty-btn increase">+</button>
+            </div>
+            <button class="cart-item-remove">Sil</button>
+          </div>
         </div>
-        <div class="cart-total" id="cart-total">Toplam: 0₺</div>
-        <div class="cart-empty" id="cart-empty">Sepetiniz boş.</div>
+        <div class="cart-total" id="cart-total">Toplam: ₺29.999,00</div>
+        <div class="cart-empty" id="cart-empty" style="display: none">
+          Sepetiniz boş.
+        </div>
       </div>
     </main>
 
+    <!-- Sayfa altbilgisi -->
     <footer>
       <div class="footer-content">
-        <img src="assets/images/logos/logo_light.png" alt="TikSepet Logo" id="footer-logo" class="footer-logo" />
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
         <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
       </div>
     </footer>
 
+    <!-- JavaScript kodları -->
     <script>
+      // Footer logosunu güncelle
       function updateFooterLogo() {
         const footerLogo = document.getElementById("footer-logo");
-        if (document.body.classList.contains("dark")) {
-          footerLogo.src = "assets/images/logos/logo_dark.png";
-        } else {
-          footerLogo.src = "assets/images/logos/logo_light.png";
-        }
+        footerLogo.src = document.body.classList.contains("dark")
+          ? "assets/images/logos/logo_dark.png"
+          : "assets/images/logos/logo_light.png";
       }
 
+      // Mobil menüyü aç/kapat
       function toggleMenu() {
         document.getElementById("navLinks").classList.toggle("active");
       }
 
+      // Tema değiştirme fonksiyonu
       function toggleTheme() {
         document.body.classList.toggle("dark");
-        localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+        const theme = document.body.classList.contains("dark")
+          ? "dark"
+          : "light";
+        localStorage.setItem("theme", theme);
         updateFooterLogo();
-        updateLogo(localStorage.getItem("theme"));
+        updateLogo(theme);
       }
 
+      // Logoyu güncelle
       function updateLogo(theme) {
         const logo = document.getElementById("site-logo");
-        logo.src = theme === "dark" ? "assets/images/logos/logo_dark.png" : "assets/images/logos/logo_light.png";
+        logo.src =
+          theme === "dark"
+            ? "assets/images/logos/logo_dark.png"
+            : "assets/images/logos/logo_light.png";
       }
 
+      // Sayfa yüklendiğinde temayı uygula
       window.addEventListener("DOMContentLoaded", () => {
-        const savedTheme = localStorage.getItem("theme");
+        const savedTheme = localStorage.getItem("theme") || "light";
         if (savedTheme === "dark") document.body.classList.add("dark");
         updateFooterLogo();
-        updateLogo(savedTheme || "light");
+        updateLogo(savedTheme);
       });
 
+      // Yükleme ekranını kapat
       window.addEventListener("load", () => {
         document.getElementById("loader").style.display = "none";
+      });
+
+      // Sepet işlemleri
+      document.addEventListener("DOMContentLoaded", () => {
+        const increaseBtns = document.querySelectorAll(".increase");
+        const decreaseBtns = document.querySelectorAll(".decrease");
+
+        // Miktar artırma butonları
+        increaseBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const qtySpan = btn.previousElementSibling;
+            qtySpan.textContent = parseInt(qtySpan.textContent) + 1;
+            updateCartTotal();
+          });
+        });
+
+        // Miktar azaltma butonları
+        decreaseBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const qtySpan = btn.nextElementSibling;
+            const count = parseInt(qtySpan.textContent);
+            if (count > 1) {
+              qtySpan.textContent = count - 1;
+              updateCartTotal();
+            }
+          });
+        });
+
+        // Sepet toplamını güncelle
+        function updateCartTotal() {
+          const items = document.querySelectorAll(".cart-item");
+          let total = 0;
+
+          items.forEach((item) => {
+            const price = parseFloat(item.dataset.price);
+            const quantity = parseInt(
+              item.querySelector(".item-qty").textContent
+            );
+            total += price * quantity;
+          });
+
+          const formattedTotal = total.toLocaleString("tr-TR", {
+            style: "currency",
+            currency: "TRY",
+          });
+
+          document.getElementById("cart-total").textContent =
+            "Toplam: " + formattedTotal;
+        }
       });
     </script>
   </body>

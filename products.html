@@ -1,156 +1,176 @@
 <!DOCTYPE html>
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TikSepet | Ürünler</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
-  </head>
-  <body>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico">
+</head>
+<body>
+    <!-- Yükleniyor göstergesi -->
     <div id="loader">Yükleniyor...</div>
 
+    <!-- Üst navigasyon -->
     <header>
-      <nav class="navbar">
-        <a href="index.html" class="logo">
-          <img
-            src="assets/images/logos/logo_light.png"
-            alt="TıkSepet"
-            id="site-logo"
-          />
-        </a>
-
-        <ul class="nav-links" id="navLinks">
-          <li><a href="index.html">Anasayfa</a></li>
-          <li><a href="products.html">Ürünler</a></li>
-          <li><a href="cart.html">Sepet</a></li>
-          <li><a href="profile.html">Profil</a></li>
-          <li><a href="admin.html">Admin</a></li>
-        </ul>
-
-        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-
-        <div class="nav-toggle" onclick="toggleMenu()">
-          <span></span><span></span><span></span>
-        </div>
-      </nav>
+        <nav class="navbar">
+            <a href="index.html" class="logo">
+                <img src="assets/images/logos/logo_light.png" alt="TikSepet" id="site-logo">
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Anasayfa</a></li>
+                <li><a href="products.html">Ürünler</a></li>
+                <li><a href="cart.html">Sepet</a></li>
+                <li><a href="profile.html">Profil</a></li>
+                <li><a href="admin.html">Admin</a></li>
+            </ul>
+            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+            <div class="nav-toggle" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
+        </nav>
     </header>
 
+    <!-- Ana içerik alanı -->
     <main>
-      <section class="product-list">
-        <h1>Ürünler</h1>
+        <section class="product-list">
+            <h1>Ürünler</h1>
 
-        <div class="filter-bar">
-          <input type="text" placeholder="Ürün ara..." class="search-input" />
-          <select class="category-filter">
-            <option value="all">Tüm Kategoriler</option>
-            <option value="elektronik">Elektronik</option>
-            <option value="giyim">Giyim</option>
-            <option value="aksesuar">Aksesuar</option>
-          </select>
-        </div>
-
-        <div class="product-grid">
-          <div class="product-card">
-            <img src="assets/images/products/product1.jpg" alt="Ürün 1" />
-            <h3>Akıllı Saat</h3>
-            <p class="price">₺21.499,00</p>
-            <div class="rating">
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9734;</span>
-              <span class="star">&#9734;</span>
+            <!-- Filtreleme çubuğu -->
+            <div class="filter-bar">
+                <input type="text" placeholder="Ürün ara..." class="search-input">
+                <select class="category-filter">
+                    <option value="all">Tüm Kategoriler</option>
+                    <option value="elektronik">Elektronik</option>
+                    <option value="giyim">Giyim</option>
+                    <option value="aksesuar">Aksesuar</option>
+                </select>
             </div>
-            <button class="btn">Sepete Ekle</button>
-          </div>
 
-          <div class="product-card">
-            <img src="assets/images/products/product2.jpg" alt="Ürün 2" />
-            <h3>Kulaklık</h3>
-            <p class="price">₺29.999,00</p>
-            <div class="rating">
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9734;</span>
-            </div>
-            <button class="btn">Sepete Ekle</button>
-          </div>
+            <!-- Ürün gridi -->
+            <div class="product-grid">
+                <!-- Ürün kartı 1 -->
+                <div class="product-card">
+                    <img src="assets/images/products/product1.jpg" alt="Akıllı Saat">
+                    <h3>Akıllı Saat</h3>
+                    <p class="price">₺21.499,00</p>
+                    <div class="rating">
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9734;</span>
+                        <span class="star">&#9734;</span>
+                    </div>
+                    <button class="btn">Sepete Ekle</button>
+                </div>
 
-          <div class="product-card">
-            <img src="assets/images/products/product3.jpg" alt="Ürün 3" />
-            <h3>Bluetooth Hoparlör</h3>
-            <p class="price">₺16.659,02</p>
-            <div class="rating">
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9734;</span>
-              <span class="star">&#9734;</span>
-              <span class="star">&#9734;</span>
+                <!-- Ürün kartı 2 -->
+                <div class="product-card">
+                    <img src="assets/images/products/product2.jpg" alt="Kulaklık">
+                    <h3>Kulaklık</h3>
+                    <p class="price">₺29.999,00</p>
+                    <div class="rating">
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9734;</span>
+                    </div>
+                    <button class="btn">Sepete Ekle</button>
+                </div>
+
+                <!-- Ürün kartı 3 -->
+                <div class="product-card">
+                    <img src="assets/images/products/product3.jpg" alt="Bluetooth Hoparlör">
+                    <h3>Bluetooth Hoparlör</h3>
+                    <p class="price">₺16.659,02</p>
+                    <div class="rating">
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9734;</span>
+                        <span class="star">&#9734;</span>
+                        <span class="star">&#9734;</span>
+                    </div>
+                    <button class="btn">Sepete Ekle</button>
+                </div>
             </div>
-            <button class="btn">Sepete Ekle</button>
-          </div>  
-        </div>
-      </section>
+        </section>
     </main>
 
+    <!-- Sayfa altbilgisi -->
     <footer>
-      <div class="footer-content">
-        <img
-          src="assets/images/logos/logo_light.png"
-          alt="TikSepet Logo"
-          id="footer-logo"
-          class="footer-logo"
-        />
-        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
-      </div>
+        <div class="footer-content">
+            <img src="assets/images/logos/logo_light.png" alt="TikSepet Logo" id="footer-logo" class="footer-logo">
+            <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+        </div>
     </footer>
 
+    <!-- JavaScript kodları -->
     <script>
-      // Tema güncellemesi için logo
-      function updateLogo(theme) {
-        const logo = document.getElementById("site-logo");
-        logo.src =
-          theme === "dark"
-            ? "assets/images/logos/logo_dark.png"
-            : "assets/images/logos/logo_light.png";
-      }
-
-      function updateFooterLogo() {
-        const logo = document.getElementById("footer-logo");
-        logo.src = document.body.classList.contains("dark")
-          ? "assets/images/logos/logo_dark.png"
-          : "assets/images/logos/logo_light.png";
-      }
-
-      function toggleMenu() {
-        document.getElementById("navLinks").classList.toggle("active");
-      }
-
-      function toggleTheme() {
-        document.body.classList.toggle("dark");
-        const currentTheme = document.body.classList.contains("dark")
-          ? "dark"
-          : "light";
-        localStorage.setItem("theme", currentTheme);
-        updateLogo(currentTheme);
-        updateFooterLogo();
-      }
-
-      window.addEventListener("DOMContentLoaded", () => {
-        const savedTheme = localStorage.getItem("theme");
-        if (savedTheme === "dark") {
-          document.body.classList.add("dark");
+        // Footer logosunu güncelle
+        function updateFooterLogo() {
+            const footerLogo = document.getElementById("footer-logo");
+            footerLogo.src = document.body.classList.contains("dark") 
+                ? "assets/images/logos/logo_dark.png" 
+                : "assets/images/logos/logo_light.png";
         }
-        updateLogo(savedTheme);
-        updateFooterLogo();
-      });
 
-      window.addEventListener("load", () => {
-        document.getElementById("loader").style.display = "none";
-      });
+        // Mobil menüyü aç/kapat
+        function toggleMenu() {
+            document.getElementById("navLinks").classList.toggle("active");
+        }
+
+        // Tema değiştirme fonksiyonu
+        function toggleTheme() {
+            document.body.classList.toggle("dark");
+            const theme = document.body.classList.contains("dark") ? "dark" : "light";
+            localStorage.setItem("theme", theme);
+            updateFooterLogo();
+            updateLogo(theme);
+        }
+
+        // Logoyu güncelle
+        function updateLogo(theme) {
+            const logo = document.getElementById("site-logo");
+            logo.src = theme === "dark" 
+                ? "assets/images/logos/logo_dark.png" 
+                : "assets/images/logos/logo_light.png";
+        }
+
+        // Sayfa yüklendiğinde temayı uygula
+        window.addEventListener("DOMContentLoaded", () => {
+            const savedTheme = localStorage.getItem("theme") || "light";
+            if (savedTheme === "dark") document.body.classList.add("dark");
+            updateFooterLogo();
+            updateLogo(savedTheme);
+        });
+
+        // Yükleme ekranını kapat
+        window.addEventListener("load", () => {
+            document.getElementById("loader").style.display = "none";
+        });
+
+        // Ürün rating etkileşimi
+        document.addEventListener("DOMContentLoaded", () => {
+            const stars = document.querySelectorAll(".star");
+            
+            stars.forEach(star => {
+                star.addEventListener("click", function() {
+                    const productCard = this.closest(".product-card");
+                    const ratingContainer = productCard.querySelector(".rating");
+                    const stars = ratingContainer.querySelectorAll(".star");
+                    const clickedIndex = Array.from(stars).indexOf(this);
+                    
+                    stars.forEach((s, index) => {
+                        if (index <= clickedIndex) {
+                            s.classList.add("selected");
+                        } else {
+                            s.classList.remove("selected");
+                        }
+                    });
+                });
+            });
+        });
     </script>
-  </body>
+</body>
 </html>
