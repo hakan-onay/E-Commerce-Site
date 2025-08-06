@@ -546,8 +546,9 @@ footer {
 .continue-shopping {
   background-color: transparent;
   color: var(--primary);
-  border: 2px solid var(--primary);
+  border: 1px solid var(--primary);
   text-decoration: none;
+
 }
 
 .continue-shopping:hover {
@@ -556,5 +557,11 @@ footer {
   transform: scale(1.05);
 }
 
+.cart-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
 
 
