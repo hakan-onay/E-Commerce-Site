@@ -513,3 +513,48 @@ footer {
         margin: 10px 0;
     }
 }
+
+
+/* Alışverişe devam et ve ödemeye geç buton stilleri */
+.checkout-btn,
+.continue-shopping {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 8px;
+  transition: background 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 207, 193, 0.3);
+}
+
+.checkout-btn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.checkout-btn:hover {
+  background-color: var(--primary-hover);
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 178, 168, 0.35);
+}
+
+.continue-shopping {
+  background-color: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  text-decoration: none;
+}
+
+.continue-shopping:hover {
+  background-color: var(--primary);
+  color: white;
+  transform: scale(1.05);
+}
+
+
+

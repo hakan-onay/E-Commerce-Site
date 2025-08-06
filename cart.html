@@ -11,7 +11,7 @@
     <!-- Yükleniyor göstergesi -->
     <div id="loader">Yükleniyor...</div>
 
-    <!-- Üst navigasyon -->
+    <!-- Üst navigasyon çubuğu -->
     <header>
       <nav class="navbar">
         <a href="index.html" class="logo">
@@ -40,25 +40,16 @@
       <div class="cart-container">
         <h1 class="cart-title">Sepetim</h1>
         <div id="cart-items">
-          <!-- Sepet öğesi örneği -->
-          <div class="cart-item" data-price="29999">
-            <img src="assets/images/products/product2.jpg" alt="Kulaklık" />
-            <div class="cart-item-info">
-              <div class="cart-item-title">Kulaklık</div>
-              <div class="cart-item-price">₺29.999,00</div>
-            </div>
-            <div class="cart-item-quantity">
-              <button class="qty-btn decrease">−</button>
-              <span class="item-qty">1</span>
-              <button class="qty-btn increase">+</button>
-            </div>
-            <button class="cart-item-remove">Sil</button>
-          </div>
+          <!-- Sepet öğeleri buraya dinamik olarak eklenecek -->
         </div>
-        <div class="cart-total" id="cart-total">Toplam: ₺29.999,00</div>
+        <div class="cart-total" id="cart-total">Toplam: ₺0,00</div>
         <div class="cart-empty" id="cart-empty" style="display: none">
           Sepetiniz boş.
         </div>
+        <button id="checkout-btn" class="checkout-btn">Ödemeye Geç</button>
+        <a href="products.html" class="continue-shopping"
+          >Alışverişe Devam Et</a
+        >
       </div>
     </main>
 
@@ -77,7 +68,7 @@
 
     <!-- JavaScript kodları -->
     <script>
-      // Footer logosunu güncelle
+      // Footer logosunu tema durumuna göre güncelle
       function updateFooterLogo() {
         const footerLogo = document.getElementById("footer-logo");
         footerLogo.src = document.body.classList.contains("dark")
@@ -85,12 +76,12 @@
           : "assets/images/logos/logo_light.png";
       }
 
-      // Mobil menüyü aç/kapat
+      // Mobil menüyü açıp kapama fonksiyonu
       function toggleMenu() {
         document.getElementById("navLinks").classList.toggle("active");
       }
 
-      // Tema değiştirme fonksiyonu
+      // Tema değiştirme fonksiyonu (koyu/açık)
       function toggleTheme() {
         document.body.classList.toggle("dark");
         const theme = document.body.classList.contains("dark")
@@ -101,7 +92,7 @@
         updateLogo(theme);
       }
 
-      // Logoyu güncelle
+      // Ana logoyu tema durumuna göre güncelle
       function updateLogo(theme) {
         const logo = document.getElementById("site-logo");
         logo.src =
@@ -110,71 +101,174 @@
             : "assets/images/logos/logo_light.png";
       }
 
-      // Sayfa yüklendiğinde temayı uygula
+      // Sepet toplamını güncelleme fonksiyonu
+      function updateCartTotal() {
+        let total = 0;
+        const cartItems = document.querySelectorAll(".cart-item");
+
+        // Tüm sepet öğelerini dolaş ve toplamı hesapla
+        cartItems.forEach((item) => {
+          const price = parseFloat(item.getAttribute("data-price"));
+          const quantity = parseInt(
+            item.querySelector(".item-qty").textContent
+          );
+          total += price * quantity;
+        });
+
+        // Toplamı Türk Lirası formatında göster
+        const formattedTotal = total.toLocaleString("tr-TR", {
+          style: "currency",
+          currency: "TRY",
+        });
+
+        document.getElementById(
+          "cart-total"
+        ).textContent = `Toplam: ${formattedTotal}`;
+
+        // Sepet boşsa uygun mesajı göster
+        if (cartItems.length === 0) {
+          document.getElementById("cart-empty").style.display = "block";
+          document.getElementById("cart-total").style.display = "none";
+          document.getElementById("checkout-btn").style.display = "none";
+        } else {
+          document.getElementById("cart-empty").style.display = "none";
+          document.getElementById("cart-total").style.display = "block";
+          document.getElementById("checkout-btn").style.display = "block";
+        }
+      }
+
+      // Sayfa yüklendiğinde çalışacak fonksiyonlar
       window.addEventListener("DOMContentLoaded", () => {
+        // Temayı localStorage'dan yükle
         const savedTheme = localStorage.getItem("theme") || "light";
         if (savedTheme === "dark") document.body.classList.add("dark");
         updateFooterLogo();
         updateLogo(savedTheme);
-        updateCartTotal(); // Sayfa yüklendiğinde toplamı göster
-      });
 
-      // Yükleme ekranını kapat
-      window.addEventListener("load", () => {
-        document.getElementById("loader").style.display = "none";
-      });
+        // Sepet verisini localStorage'dan al
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const cartItemsContainer = document.getElementById("cart-items");
+        const emptyMessage = document.getElementById("cart-empty");
+        const cartTotal = document.getElementById("cart-total");
 
-      // Sepet işlemleri
-      document.addEventListener("DOMContentLoaded", () => {
-        const increaseBtns = document.querySelectorAll(".increase");
-        const decreaseBtns = document.querySelectorAll(".decrease");
+        // Sepet boşsa mesaj göster
+        if (cart.length === 0) {
+          emptyMessage.style.display = "block";
+          cartTotal.style.display = "none";
+          document.getElementById("checkout-btn").style.display = "none";
+        } else {
+          emptyMessage.style.display = "none";
+          cartTotal.style.display = "block";
+          document.getElementById("checkout-btn").style.display = "block";
 
-        // Miktar artırma butonları
-        increaseBtns.forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const qtySpan = btn.previousElementSibling;
-            qtySpan.textContent = parseInt(qtySpan.textContent) + 1;
+          // Sepet öğelerini oluştur
+          cart.forEach((item) => {
+            const cartItemHTML = `
+            <div class="cart-item" data-id="${item.id}" data-price="${
+              item.price
+            }">
+              <img src="${item.image}" alt="${item.name}" />
+              <div class="cart-item-info">
+                <div class="cart-item-title">${item.name}</div>
+                <div class="cart-item-price">${item.price.toLocaleString(
+                  "tr-TR",
+                  {
+                    style: "currency",
+                    currency: "TRY",
+                  }
+                )}</div>
+                <div class="cart-item-quantity">
+                  <button class="qty-btn decrease">-</button>
+                  <span class="item-qty">${item.quantity}</span>
+                  <button class="qty-btn increase">+</button>
+                </div>
+              </div>
+              <button class="cart-item-remove">Sil</button>
+            </div>
+          `;
+            cartItemsContainer.insertAdjacentHTML("beforeend", cartItemHTML);
+          });
+
+          // Toplamı güncelle
+          updateCartTotal();
+        }
+
+        // Miktar artırma butonlarına event ekle
+        document.querySelectorAll(".increase").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const itemElement = e.target.closest(".cart-item");
+            const itemId = itemElement.getAttribute("data-id");
+            const qtySpan = e.target.previousElementSibling;
+            const newQty = parseInt(qtySpan.textContent) + 1;
+            qtySpan.textContent = newQty;
+
+            // LocalStorage'ı güncelle
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const itemIndex = cart.findIndex((item) => item.id === itemId);
+            if (itemIndex !== -1) {
+              cart[itemIndex].quantity = newQty;
+              localStorage.setItem("cart", JSON.stringify(cart));
+            }
+
             updateCartTotal();
           });
         });
 
-        // Miktar azaltma butonları
-        decreaseBtns.forEach((btn) => {
-          btn.addEventListener("click", () => {
-            const qtySpan = btn.nextElementSibling;
-            const count = parseInt(qtySpan.textContent);
-            if (count > 1) {
-              qtySpan.textContent = count - 1;
+        // Miktar azaltma butonlarına event ekle
+        document.querySelectorAll(".decrease").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const itemElement = e.target.closest(".cart-item");
+            const itemId = itemElement.getAttribute("data-id");
+            const qtySpan = e.target.nextElementSibling;
+            const currentQty = parseInt(qtySpan.textContent);
+
+            if (currentQty > 1) {
+              const newQty = currentQty - 1;
+              qtySpan.textContent = newQty;
+
+              // LocalStorage'ı güncelle
+              const cart = JSON.parse(localStorage.getItem("cart")) || [];
+              const itemIndex = cart.findIndex((item) => item.id === itemId);
+              if (itemIndex !== -1) {
+                cart[itemIndex].quantity = newQty;
+                localStorage.setItem("cart", JSON.stringify(cart));
+              }
+
               updateCartTotal();
             }
           });
         });
 
-        // Sepet toplamını güncelle
-        function updateCartTotal() {
-          let total = 0;
+        // Sil butonlarına event ekle
+        document.querySelectorAll(".cart-item-remove").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            const itemElement = e.target.closest(".cart-item");
+            const itemId = itemElement.getAttribute("data-id");
 
-          // Tüm sepet ürünlerini al
-          const cartItems = document.querySelectorAll(".cart-item");
+            // Öğeyi DOM'dan kaldır
+            itemElement.remove();
 
-          cartItems.forEach((item) => {
-            const price = parseFloat(item.getAttribute("data-price"));
-            const quantity = parseInt(
-              item.querySelector(".item-qty").textContent
-            );
-            total += price * quantity;
+            // LocalStorage'dan kaldır
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const updatedCart = cart.filter((item) => item.id !== itemId);
+            localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+            updateCartTotal();
           });
+        });
 
-          // Türk lirası formatında göster
-          const formattedTotal = total.toLocaleString("tr-TR", {
-            style: "currency",
-            currency: "TRY",
+        // Ödeme butonuna event ekle
+        document
+          .getElementById("checkout-btn")
+          .addEventListener("click", () => {
+            alert("Ödeme işlemine yönlendiriliyorsunuz...");
+            // Burada ödeme sayfasına yönlendirme yapılabilir
           });
+      });
 
-          document.getElementById(
-            "cart-total"
-          ).textContent = `Toplam: ${formattedTotal}`;
-        }
+      // Sayfa tamamen yüklendiğinde yükleniyor göstergesini gizle
+      window.addEventListener("load", () => {
+        document.getElementById("loader").style.display = "none";
       });
     </script>
   </body>
