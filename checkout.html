@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikSepet | Ödeme</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+  <body>
+    <div id="loader">Yükleniyor...</div>
+
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li><a href="cart.html">Sepet</a></li>
+          <li><a href="profile.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        <div class="nav-toggle" onclick="toggleMenu()">
+          <span></span><span></span><span></span>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main -->
+    <main class="checkout-container">
+      <h1>Ödeme Sayfası</h1>
+      <div class="checkout-wrapper">
+        <!-- Kullanıcı Formu -->
+        <section class="checkout-form">
+          <h2>Bilgilerinizi Girin</h2>
+          <form id="order-form">
+            <label>Ad Soyad</label>
+            <input type="text" id="fullname" required />
+
+            <label>E-posta</label>
+            <input type="email" id="email" required />
+
+            <label>Adres</label>
+            <textarea id="address" rows="4" required></textarea>
+
+            <button type="submit" class="checkout-btn">Siparişi Onayla</button>
+          </form>
+        </section>
+
+        <!-- Sipariş Özeti -->
+        <section class="order-summary">
+          <h2>Sipariş Özeti</h2>
+          <div id="order-items"></div>
+          <div class="cart-total" id="checkout-total">Toplam: ₺0,00</div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+      // Tema, logo ve menu
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
+        const theme = document.body.classList.contains("dark")
+          ? "dark"
+          : "light";
+        localStorage.setItem("theme", theme);
+        updateLogo(theme);
+        updateFooterLogo();
+      }
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+      }
+      function updateLogo(theme) {
+        const logo = document.getElementById("site-logo");
+        logo.src =
+          theme === "dark"
+            ? "assets/images/logos/logo_dark.png"
+            : "assets/images/logos/logo_light.png";
+      }
+      function updateFooterLogo() {
+        const logo = document.getElementById("footer-logo");
+        logo.src = document.body.classList.contains("dark")
+          ? "assets/images/logos/logo_dark.png"
+          : "assets/images/logos/logo_light.png";
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        if (savedTheme === "dark") document.body.classList.add("dark");
+        updateLogo(savedTheme);
+        updateFooterLogo();
+
+        // Sipariş özetini getir
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const orderItemsContainer = document.getElementById("order-items");
+        const totalDiv = document.getElementById("checkout-total");
+
+        let total = 0;
+        cart.forEach((item) => {
+          const itemTotal = item.price * item.quantity;
+          total += itemTotal;
+          orderItemsContainer.innerHTML += `
+          <div style="margin-bottom: 12px">
+            <strong>${item.name}</strong> x ${item.quantity}  
+            <span style="float:right">${itemTotal.toLocaleString("tr-TR", {
+              style: "currency",
+              currency: "TRY",
+            })}</span>
+          </div>
+        `;
+        });
+
+        totalDiv.textContent = `Toplam: ${total.toLocaleString("tr-TR", {
+          style: "currency",
+          currency: "TRY",
+        })}`;
+
+        // Siparişi onayla
+        document
+          .getElementById("order-form")
+          .addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("fullname").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const address = document.getElementById("address").value.trim();
+
+            if (!name || !email || !address) {
+              alert("Lütfen tüm alanları doldurun.");
+              return;
+            }
+
+            const newOrder = {
+              id: Date.now(),
+              name,
+              email,
+              address,
+              items: cart,
+              total,
+              date: new Date().toISOString(),
+            };
+
+            const orders = JSON.parse(localStorage.getItem("orders")) || [];
+            orders.push(newOrder);
+            localStorage.setItem("orders", JSON.stringify(orders));
+
+            localStorage.removeItem("cart"); // Sepeti temizle
+            alert("Siparişiniz alınmıştır. Teşekkür ederiz! 😊");
+            window.location.href = "index.html";
+          });
+      });
+
+      window.addEventListener("load", () => {
+        document.getElementById("loader").style.display = "none";
+      });
+    </script>
+  </body>
+</html>

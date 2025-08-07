@@ -514,8 +514,7 @@ footer {
     }
 }
 
-
-/* Alışverişe devam et ve ödemeye geç buton stilleri */
+/* Alışverişe devam et ve ödemeye geç buton stilleri ve konumları */
 .checkout-btn,
 .continue-shopping {
   display: inline-block;
@@ -563,5 +562,3 @@ footer {
   gap: 15px;
   margin-top: 30px;
 }
-
-
