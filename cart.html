@@ -110,7 +110,6 @@
         let total = 0;
         const cartItems = document.querySelectorAll(".cart-item");
 
-        // Tüm sepet öğelerini dolaş ve toplamı hesapla
         cartItems.forEach((item) => {
           const price = parseFloat(item.getAttribute("data-price"));
           const quantity = parseInt(
@@ -119,7 +118,6 @@
           total += price * quantity;
         });
 
-        // Toplamı Türk Lirası formatında göster
         const formattedTotal = total.toLocaleString("tr-TR", {
           style: "currency",
           currency: "TRY",
@@ -129,7 +127,6 @@
           "cart-total"
         ).textContent = `Toplam: ${formattedTotal}`;
 
-        // Sepet boşsa uygun mesajı göster
         if (cartItems.length === 0) {
           document.getElementById("cart-empty").style.display = "block";
           document.getElementById("cart-total").style.display = "none";
@@ -141,21 +138,17 @@
         }
       }
 
-      // Sayfa yüklendiğinde çalışacak fonksiyonlar
       window.addEventListener("DOMContentLoaded", () => {
-        // Temayı localStorage'dan yükle
         const savedTheme = localStorage.getItem("theme") || "light";
         if (savedTheme === "dark") document.body.classList.add("dark");
         updateFooterLogo();
         updateLogo(savedTheme);
 
-        // Sepet verisini localStorage'dan al
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const cartItemsContainer = document.getElementById("cart-items");
         const emptyMessage = document.getElementById("cart-empty");
         const cartTotal = document.getElementById("cart-total");
 
-        // Sepet boşsa mesaj göster
         if (cart.length === 0) {
           emptyMessage.style.display = "block";
           cartTotal.style.display = "none";
@@ -165,39 +158,36 @@
           cartTotal.style.display = "block";
           document.getElementById("checkout-btn").style.display = "block";
 
-          // Sepet öğelerini oluştur
           cart.forEach((item) => {
             const cartItemHTML = `
-            <div class="cart-item" data-id="${item.id}" data-price="${
+              <div class="cart-item" data-id="${item.id}" data-price="${
               item.price
             }">
-              <img src="${item.image}" alt="${item.name}" />
-              <div class="cart-item-info">
-                <div class="cart-item-title">${item.name}</div>
-                <div class="cart-item-price">${item.price.toLocaleString(
-                  "tr-TR",
-                  {
-                    style: "currency",
-                    currency: "TRY",
-                  }
-                )}</div>
-                <div class="cart-item-quantity">
-                  <button class="qty-btn decrease">-</button>
-                  <span class="item-qty">${item.quantity}</span>
-                  <button class="qty-btn increase">+</button>
+                <img src="${item.image}" alt="${item.name}" />
+                <div class="cart-item-info">
+                  <div class="cart-item-title">${item.name}</div>
+                  <div class="cart-item-price">${item.price.toLocaleString(
+                    "tr-TR",
+                    {
+                      style: "currency",
+                      currency: "TRY",
+                    }
+                  )}</div>
+                  <div class="cart-item-quantity">
+                    <button class="qty-btn decrease">-</button>
+                    <span class="item-qty">${item.quantity}</span>
+                    <button class="qty-btn increase">+</button>
+                  </div>
                 </div>
+                <button class="cart-item-remove">Sil</button>
               </div>
-              <button class="cart-item-remove">Sil</button>
-            </div>
-          `;
+            `;
             cartItemsContainer.insertAdjacentHTML("beforeend", cartItemHTML);
           });
 
-          // Toplamı güncelle
           updateCartTotal();
         }
 
-        // Miktar artırma butonlarına event ekle
         document.querySelectorAll(".increase").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             const itemElement = e.target.closest(".cart-item");
@@ -206,7 +196,6 @@
             const newQty = parseInt(qtySpan.textContent) + 1;
             qtySpan.textContent = newQty;
 
-            // LocalStorage'ı güncelle
             const cart = JSON.parse(localStorage.getItem("cart")) || [];
             const itemIndex = cart.findIndex((item) => item.id === itemId);
             if (itemIndex !== -1) {
@@ -218,7 +207,6 @@
           });
         });
 
-        // Miktar azaltma butonlarına event ekle
         document.querySelectorAll(".decrease").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             const itemElement = e.target.closest(".cart-item");
@@ -230,7 +218,6 @@
               const newQty = currentQty - 1;
               qtySpan.textContent = newQty;
 
-              // LocalStorage'ı güncelle
               const cart = JSON.parse(localStorage.getItem("cart")) || [];
               const itemIndex = cart.findIndex((item) => item.id === itemId);
               if (itemIndex !== -1) {
@@ -243,16 +230,13 @@
           });
         });
 
-        // Sil butonlarına event ekle
         document.querySelectorAll(".cart-item-remove").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             const itemElement = e.target.closest(".cart-item");
             const itemId = itemElement.getAttribute("data-id");
 
-            // Öğeyi DOM'dan kaldır
             itemElement.remove();
 
-            // LocalStorage'dan kaldır
             const cart = JSON.parse(localStorage.getItem("cart")) || [];
             const updatedCart = cart.filter((item) => item.id !== itemId);
             localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -261,19 +245,19 @@
           });
         });
 
-        // Ödeme butonuna event ekle
+        // Ödeme butonuna yönlendirme
         document
           .getElementById("checkout-btn")
           .addEventListener("click", () => {
-            alert("Ödeme işlemine yönlendiriliyorsunuz...");
-            // Burada ödeme sayfasına yönlendirme yapılabilir
+            window.location.href = "checkout.html";
           });
       });
 
-      // Sayfa tamamen yüklendiğinde yükleniyor göstergesini gizle
+      // Sayfa yüklendiğinde yükleme ekranını kapat
       window.addEventListener("load", () => {
         document.getElementById("loader").style.display = "none";
       });
     </script>
   </body>
 </html>
+

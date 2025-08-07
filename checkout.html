@@ -122,14 +122,22 @@
           const itemTotal = item.price * item.quantity;
           total += itemTotal;
           orderItemsContainer.innerHTML += `
-          <div style="margin-bottom: 12px">
-            <strong>${item.name}</strong> x ${item.quantity}  
-            <span style="float:right">${itemTotal.toLocaleString("tr-TR", {
-              style: "currency",
-              currency: "TRY",
-            })}</span>
-          </div>
-        `;
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px; border-bottom:1px solid #ccc; padding-bottom:10px">
+              <img src="${item.image}" alt="${
+            item.name
+          }" style="width:60px; height:60px; object-fit:contain; background:white; border-radius:8px;" />
+              <div style="flex:1">
+                <div style="font-weight:bold;">${item.name}</div>
+                <div>Miktar: ${item.quantity}</div>
+    </div>
+    <div style="white-space:nowrap; font-weight:bold;">
+      ${itemTotal.toLocaleString("tr-TR", {
+        style: "currency",
+        currency: "TRY",
+      })}
+    </div>
+  </div>
+`;
         });
 
         totalDiv.textContent = `Toplam: ${total.toLocaleString("tr-TR", {
