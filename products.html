@@ -54,7 +54,7 @@
         <!-- Ürün gridi -->
         <div class="product-grid">
           <!-- Ürün kartı 1 -->
-          <div class="product-card">
+          <div class="product-card" data-category="elektronik">
             <img src="assets/images/products/product1.jpg" alt="Akıllı Saat" />
             <h3>Akıllı Saat</h3>
             <p class="price">₺21.499,00</p>
@@ -77,7 +77,7 @@
           </div>
 
           <!-- Ürün kartı 2 -->
-          <div class="product-card">
+          <div class="product-card" data-category="elektronik">
             <img src="assets/images/products/product2.jpg" alt="Kulaklık" />
             <h3>Kulaklık</h3>
             <p class="price">₺29.999,00</p>
@@ -100,7 +100,7 @@
           </div>
 
           <!-- Ürün kartı 3 -->
-          <div class="product-card">
+          <div class="product-card" data-category="elektronik">
             <img
               src="assets/images/products/product3.jpg"
               alt="Bluetooth Hoparlör"
@@ -242,9 +242,57 @@
 
           // Güncellenmiş sepeti localStorage’a kaydet
           localStorage.setItem("cart", JSON.stringify(cart));
-          alert(`${name} sepete eklendi.`);
+          showToast(`${name} sepete eklendi.`);
         });
       });
+
+      // Ürün filtreleme (arama + kategori)
+      document.addEventListener("DOMContentLoaded", () => {
+        const searchInput = document.querySelector(".search-input");
+        const categorySelect = document.querySelector(".category-filter");
+        const productCards = document.querySelectorAll(".product-card");
+
+        function filterProducts() {
+          const searchText = searchInput.value.toLowerCase();
+          const selectedCategory = categorySelect.value;
+
+          productCards.forEach((card) => {
+            const productName = card
+              .querySelector("h3")
+              .textContent.toLowerCase();
+            const category = card.getAttribute("data-category") || "all";
+
+            const matchesSearch = productName.includes(searchText);
+            const matchesCategory =
+              selectedCategory === "all" || selectedCategory === category;
+
+            if (matchesSearch && matchesCategory) {
+              card.style.display = "block";
+            } else {
+              card.style.display = "none";
+            }
+          });
+        }
+
+        searchInput.addEventListener("input", filterProducts);
+        categorySelect.addEventListener("change", filterProducts);
+      });
+
+      // Toast mesajı gösterme fonksiyonu
+      function showToast(message) {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = message;
+        container.appendChild(toast);
+
+        setTimeout(() => {
+          toast.remove();
+        }, 3000); // 3 saniyede kaybolur
+      }
     </script>
+
+    <!-- Toast bildirimi -->
+    <div id="toast-container"></div>
   </body>
 </html>
