@@ -8,18 +8,12 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
   </head>
   <body>
-    <!-- Yükleniyor göstergesi -->
     <div id="loader">Yükleniyor...</div>
 
-    <!-- Üst navigasyon çubuğu -->
     <header>
       <nav class="navbar">
         <a href="index.html" class="logo">
-          <img
-            src="assets/images/logos/logo_light.png"
-            alt="TikSepet"
-            id="site-logo"
-          />
+          <img src="assets/images/logos/logo_light.png" alt="TikSepet" id="site-logo" />
         </a>
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Anasayfa</a></li>
@@ -35,44 +29,32 @@
       </nav>
     </header>
 
-    <!-- Ana içerik alanı -->
     <main>
       <div class="cart-container">
         <h1 class="cart-title">Sepetim</h1>
         <div id="cart-items">
-          <!-- Sepet öğeleri buraya dinamik olarak eklenecek -->
+          <!-- Ürünler burada gösterilecek -->
         </div>
         <div class="cart-total" id="cart-total">Toplam: ₺0,00</div>
-        <div class="cart-empty" id="cart-empty" style="display: none">
-          Sepetiniz boş.
-        </div>
+        <div class="cart-empty" id="cart-empty" style="display: none">Sepetiniz boş.</div>
 
-        <!-- Yeni kapsayıcı div -->
+        <!-- Ödeme ve alışverişe devam butonları -->
         <div class="cart-actions">
           <button id="checkout-btn" class="checkout-btn">Ödemeye Geç</button>
-          <a href="products.html" class="continue-shopping"
-            >Alışverişe Devam Et</a
-          >
+          <a href="products.html" class="continue-shopping">Alışverişe Devam Et</a>
         </div>
       </div>
     </main>
 
-    <!-- Sayfa altbilgisi -->
     <footer>
       <div class="footer-content">
-        <img
-          src="assets/images/logos/logo_light.png"
-          alt="TikSepet Logo"
-          id="footer-logo"
-          class="footer-logo"
-        />
+        <img src="assets/images/logos/logo_light.png" alt="TikSepet Logo" id="footer-logo" class="footer-logo" />
         <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
       </div>
     </footer>
 
-    <!-- JavaScript kodları -->
     <script>
-      // Footer logosunu tema durumuna göre güncelle
+      // Tema logosunu güncelle
       function updateFooterLogo() {
         const footerLogo = document.getElementById("footer-logo");
         footerLogo.src = document.body.classList.contains("dark")
@@ -80,41 +62,33 @@
           : "assets/images/logos/logo_light.png";
       }
 
-      // Mobil menüyü açıp kapama fonksiyonu
       function toggleMenu() {
         document.getElementById("navLinks").classList.toggle("active");
       }
 
-      // Tema değiştirme fonksiyonu (koyu/açık)
+      // Tema değiştirme
       function toggleTheme() {
         document.body.classList.toggle("dark");
-        const theme = document.body.classList.contains("dark")
-          ? "dark"
-          : "light";
+        const theme = document.body.classList.contains("dark") ? "dark" : "light";
         localStorage.setItem("theme", theme);
         updateFooterLogo();
         updateLogo(theme);
       }
 
-      // Ana logoyu tema durumuna göre güncelle
+      // Logo güncelle
       function updateLogo(theme) {
         const logo = document.getElementById("site-logo");
-        logo.src =
-          theme === "dark"
-            ? "assets/images/logos/logo_dark.png"
-            : "assets/images/logos/logo_light.png";
+        logo.src = theme === "dark" ? "assets/images/logos/logo_dark.png" : "assets/images/logos/logo_light.png";
       }
 
-      // Sepet toplamını güncelleme fonksiyonu
+      // Toplam tutarı hesapla ve UI'yi güncelle
       function updateCartTotal() {
         let total = 0;
         const cartItems = document.querySelectorAll(".cart-item");
 
         cartItems.forEach((item) => {
           const price = parseFloat(item.getAttribute("data-price"));
-          const quantity = parseInt(
-            item.querySelector(".item-qty").textContent
-          );
+          const quantity = parseInt(item.querySelector(".item-qty").textContent);
           total += price * quantity;
         });
 
@@ -123,10 +97,9 @@
           currency: "TRY",
         });
 
-        document.getElementById(
-          "cart-total"
-        ).textContent = `Toplam: ${formattedTotal}`;
+        document.getElementById("cart-total").textContent = `Toplam: ${formattedTotal}`;
 
+        // Sepet boşsa UI güncelle
         if (cartItems.length === 0) {
           document.getElementById("cart-empty").style.display = "block";
           document.getElementById("cart-total").style.display = "none";
@@ -139,40 +112,30 @@
       }
 
       window.addEventListener("DOMContentLoaded", () => {
+        // Tema ayarını yükle
         const savedTheme = localStorage.getItem("theme") || "light";
         if (savedTheme === "dark") document.body.classList.add("dark");
         updateFooterLogo();
         updateLogo(savedTheme);
 
+        // Sepet verisini localStorage'dan al
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const cartItemsContainer = document.getElementById("cart-items");
-        const emptyMessage = document.getElementById("cart-empty");
-        const cartTotal = document.getElementById("cart-total");
 
+        // Sepet boşsa uyarı göster
         if (cart.length === 0) {
-          emptyMessage.style.display = "block";
-          cartTotal.style.display = "none";
+          document.getElementById("cart-empty").style.display = "block";
+          document.getElementById("cart-total").style.display = "none";
           document.getElementById("checkout-btn").style.display = "none";
         } else {
-          emptyMessage.style.display = "none";
-          cartTotal.style.display = "block";
-          document.getElementById("checkout-btn").style.display = "block";
-
+          // Sepetteki ürünleri HTML'e ekle
           cart.forEach((item) => {
             const cartItemHTML = `
-              <div class="cart-item" data-id="${item.id}" data-price="${
-              item.price
-            }">
+              <div class="cart-item" data-id="${item.id}" data-price="${item.price}">
                 <img src="${item.image}" alt="${item.name}" />
                 <div class="cart-item-info">
                   <div class="cart-item-title">${item.name}</div>
-                  <div class="cart-item-price">${item.price.toLocaleString(
-                    "tr-TR",
-                    {
-                      style: "currency",
-                      currency: "TRY",
-                    }
-                  )}</div>
+                  <div class="cart-item-price">${item.price.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}</div>
                   <div class="cart-item-quantity">
                     <button class="qty-btn decrease">-</button>
                     <span class="item-qty">${item.quantity}</span>
@@ -184,10 +147,10 @@
             `;
             cartItemsContainer.insertAdjacentHTML("beforeend", cartItemHTML);
           });
-
           updateCartTotal();
         }
 
+        // Adet arttır
         document.querySelectorAll(".increase").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             const itemElement = e.target.closest(".cart-item");
@@ -207,6 +170,7 @@
           });
         });
 
+        // Adet azalt
         document.querySelectorAll(".decrease").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             const itemElement = e.target.closest(".cart-item");
@@ -230,6 +194,7 @@
           });
         });
 
+        // Ürün sil
         document.querySelectorAll(".cart-item-remove").forEach((btn) => {
           btn.addEventListener("click", (e) => {
             const itemElement = e.target.closest(".cart-item");
@@ -245,19 +210,16 @@
           });
         });
 
-        // Ödeme butonuna yönlendirme
-        document
-          .getElementById("checkout-btn")
-          .addEventListener("click", () => {
-            window.location.href = "checkout.html";
-          });
+        // Ödeme sayfasına yönlendir
+        document.getElementById("checkout-btn").addEventListener("click", () => {
+          window.location.href = "checkout.html";
+        });
       });
 
-      // Sayfa yüklendiğinde yükleme ekranını kapat
+      // Yüklenme ekranını kaldır
       window.addEventListener("load", () => {
         document.getElementById("loader").style.display = "none";
       });
     </script>
   </body>
 </html>
-

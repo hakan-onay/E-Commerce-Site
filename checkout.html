@@ -8,6 +8,7 @@
     <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
   </head>
   <body>
+    <!-- Yükleniyor animasyonu -->
     <div id="loader">Yükleniyor...</div>
 
     <!-- Navbar -->
@@ -23,19 +24,20 @@
           <li><a href="profile.html">Profil</a></li>
           <li><a href="admin.html">Admin</a></li>
         </ul>
-        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+        <button class="theme-toggle" onclick="toggleTheme()">🌃</button>
         <div class="nav-toggle" onclick="toggleMenu()">
           <span></span><span></span><span></span>
         </div>
       </nav>
     </header>
 
-    <!-- Main -->
+    <!-- Ana ödeme formu -->
     <main class="checkout-container">
       <h1>Ödeme Sayfası</h1>
       <form id="checkout-form">
         <h2>Teslimat Bilgileri</h2>
 
+        <!-- Kullanıcı bilgileri alanları -->
         <label>Ad *</label>
         <input type="text" id="first-name" required />
         <label>Soyad *</label>
@@ -51,6 +53,7 @@
         <label>Açık Adres *</label>
         <textarea id="address" rows="3" required></textarea>
 
+        <!-- Ödeme yöntemi seçimi -->
         <label for="payment-method">Ödeme Yöntemi *</label>
         <select id="payment-method" required>
           <option value="">Seçiniz</option>
@@ -58,6 +61,7 @@
           <option value="cash">Kapıda Ödeme</option>
         </select>
 
+        <!-- Kart bilgileri sadece kartla ödeme seçilince görünür -->
         <div id="card-info" style="display: none; margin-top: 15px">
           <h3>Kart Bilgileri</h3>
           <label>Kart Numarası *</label>
@@ -82,6 +86,7 @@
 
     <!-- JavaScript -->
     <script>
+      // Tema aç/kapa
       function toggleTheme() {
         document.body.classList.toggle("dark");
         const theme = document.body.classList.contains("dark") ? "dark" : "light";
@@ -90,15 +95,18 @@
         updateFooterLogo();
       }
 
+      // Mobil menü toggle
       function toggleMenu() {
         document.getElementById("navLinks").classList.toggle("active");
       }
 
+      // Logo güncelle
       function updateLogo(theme) {
         const logo = document.getElementById("site-logo");
         logo.src = theme === "dark" ? "assets/images/logos/logo_dark.png" : "assets/images/logos/logo_light.png";
       }
 
+      // Footer logosunu güncelle
       function updateFooterLogo() {
         const logo = document.getElementById("footer-logo");
         logo.src = document.body.classList.contains("dark")
@@ -106,15 +114,18 @@
           : "assets/images/logos/logo_light.png";
       }
 
+      // Sayfa içeriği yüklenince tema ve form işlemleri
       window.addEventListener("DOMContentLoaded", () => {
         const savedTheme = localStorage.getItem("theme") || "light";
         if (savedTheme === "dark") document.body.classList.add("dark");
         updateLogo(savedTheme);
         updateFooterLogo();
 
+        // Siparişi onayla
         document.getElementById("checkout-form").addEventListener("submit", (e) => {
           e.preventDefault();
 
+          // Kullanıcı bilgilerini al
           const firstName = document.getElementById("first-name").value.trim();
           const lastName = document.getElementById("last-name").value.trim();
           const phone = document.getElementById("phone").value.trim();
@@ -124,11 +135,13 @@
           const address = document.getElementById("address").value.trim();
           const paymentMethod = document.getElementById("payment-method").value;
 
+          // Zorunlu alan kontrolü
           if (!firstName || !lastName || !phone || !email || !city || !district || !address || !paymentMethod) {
             alert("Lütfen tüm zorunlu alanları doldurun.");
             return;
           }
 
+          // Kart ödemesi ise kart bilgilerini al ve kontrol et
           if (paymentMethod === "card") {
             const cardNumber = document.getElementById("card-number").value.trim();
             const expiry = document.getElementById("expiry").value.trim();
@@ -140,10 +153,12 @@
             }
           }
 
+          // Sepet bilgileri al ve toplam hesapla
           const cart = JSON.parse(localStorage.getItem("cart")) || [];
           let total = 0;
           cart.forEach(item => total += item.price * item.quantity);
 
+          // Yeni sipariş objesi
           const newOrder = {
             id: Date.now(),
             name: firstName + " " + lastName,
@@ -156,20 +171,24 @@
             date: new Date().toISOString(),
           };
 
+          // Siparişi kaydet
           const orders = JSON.parse(localStorage.getItem("orders")) || [];
           orders.push(newOrder);
           localStorage.setItem("orders", JSON.stringify(orders));
 
+          // Sepeti temizle ve ana sayfaya yönlendir
           localStorage.removeItem("cart");
           alert("Siparişiniz başarıyla alındı. Teşekkür ederiz!");
           window.location.href = "index.html";
         });
       });
 
+      // Yüklenme tamamlanınca loader'ı gizle
       window.addEventListener("load", () => {
         document.getElementById("loader").style.display = "none";
       });
 
+      // Ödeme yöntemi seçildikçe kart bilgileri görünmesini kontrol et
       document.getElementById("payment-method").addEventListener("change", function () {
         const method = this.value;
         const cardInfo = document.getElementById("card-info");
