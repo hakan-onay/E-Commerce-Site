@@ -21,6 +21,8 @@
             id="site-logo"
           />
         </a>
+
+        <!-- Menü bağlantıları -->
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Anasayfa</a></li>
           <li><a href="products.html">Ürünler</a></li>
@@ -28,9 +30,13 @@
           <li><a href="profile.html">Profil</a></li>
           <li><a href="admin.html">Admin</a></li>
         </ul>
-        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-        <div class="nav-toggle" onclick="toggleMenu()">
-          <span></span><span></span><span></span>
+
+        <!-- Tema ve hamburger birlikte -->
+        <div class="nav-right">
+          <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+          <div class="nav-toggle" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+          </div>
         </div>
       </nav>
     </header>

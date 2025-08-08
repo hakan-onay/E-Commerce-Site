@@ -1,99 +1,117 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TikSepet | Anasayfa</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico">
-</head>
-<body>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+  <body>
     <!-- Yükleniyor göstergesi -->
     <div id="loader">Yükleniyor...</div>
 
     <!-- Üst navigasyon -->
     <header>
-        <nav class="navbar">
-            <a href="index.html" class="logo">
-                <img src="assets/images/logos/logo_light.png" alt="TikSepet" id="site-logo">
-            </a>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.html">Anasayfa</a></li>
-                <li><a href="products.html">Ürünler</a></li>
-                <li><a href="cart.html">Sepet</a></li>
-                <li><a href="profile.html">Profil</a></li>
-                <li><a href="admin.html">Admin</a></li>
-            </ul>
-            <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-            <div class="nav-toggle" onclick="toggleMenu()">
-                <span></span><span></span><span></span>
-            </div>
-        </nav>
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
+        </a>
+
+        <!-- Menü bağlantıları -->
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li><a href="cart.html">Sepet</a></li>
+          <li><a href="profile.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+
+        <!-- Tema ve hamburger birlikte -->
+        <div class="nav-right">
+          <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+          <div class="nav-toggle" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </nav>
     </header>
 
     <!-- Ana içerik alanı -->
     <main>
-        <section class="hero">
-            <div class="hero-overlay">
-                <h1>Hoş Geldiniz</h1>
-                <p>Kaliteli ürünleri en iyi fiyatlarla keşfedin.</p>
-                <a href="products.html" class="btn">Alışverişe Başla</a>
-            </div>
-        </section>
+      <section class="hero">
+        <div class="hero-overlay">
+          <h1>Hoş Geldiniz</h1>
+          <p>Kaliteli ürünleri en iyi fiyatlarla keşfedin.</p>
+          <a href="products.html" class="btn">Alışverişe Başla</a>
+        </div>
+      </section>
     </main>
 
     <!-- Sayfa altbilgisi -->
     <footer>
-        <div class="footer-content">
-            <img src="assets/images/logos/logo_light.png" alt="TikSepet Logo" id="footer-logo" class="footer-logo">
-            <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
-        </div>
+      <div class="footer-content">
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+      </div>
     </footer>
 
     <!-- JavaScript kodları -->
     <script>
-        // Footer logosunu güncelle
-        function updateFooterLogo() {
-            const footerLogo = document.getElementById("footer-logo");
-            footerLogo.src = document.body.classList.contains("dark") 
-                ? "assets/images/logos/logo_dark.png" 
-                : "assets/images/logos/logo_light.png";
-        }
+      // Footer logosunu güncelle
+      function updateFooterLogo() {
+        const footerLogo = document.getElementById("footer-logo");
+        footerLogo.src = document.body.classList.contains("dark")
+          ? "assets/images/logos/logo_dark.png"
+          : "assets/images/logos/logo_light.png";
+      }
 
-        // Mobil menüyü aç/kapat
-        function toggleMenu() {
-            document.getElementById("navLinks").classList.toggle("active");
-        }
+      // Mobil menüyü aç/kapat
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+      }
 
-        // Tema değiştirme fonksiyonu
-        function toggleTheme() {
-            document.body.classList.toggle("dark");
-            const theme = document.body.classList.contains("dark") ? "dark" : "light";
-            localStorage.setItem("theme", theme);
-            updateFooterLogo();
-            updateLogo(theme);
-        }
+      // Tema değiştirme fonksiyonu
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
+        const theme = document.body.classList.contains("dark")
+          ? "dark"
+          : "light";
+        localStorage.setItem("theme", theme);
+        updateFooterLogo();
+        updateLogo(theme);
+      }
 
-        // Logoyu güncelle
-        function updateLogo(theme) {
-            const logo = document.getElementById("site-logo");
-            logo.src = theme === "dark" 
-                ? "assets/images/logos/logo_dark.png" 
-                : "assets/images/logos/logo_light.png";
-        }
+      // Logoyu güncelle
+      function updateLogo(theme) {
+        const logo = document.getElementById("site-logo");
+        logo.src =
+          theme === "dark"
+            ? "assets/images/logos/logo_dark.png"
+            : "assets/images/logos/logo_light.png";
+      }
 
-        // Sayfa yüklendiğinde temayı uygula
-        window.addEventListener("DOMContentLoaded", () => {
-            const savedTheme = localStorage.getItem("theme") || "light";
-            if (savedTheme === "dark") document.body.classList.add("dark");
-            updateFooterLogo();
-            updateLogo(savedTheme);
-        });
+      // Sayfa yüklendiğinde temayı uygula
+      window.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        if (savedTheme === "dark") document.body.classList.add("dark");
+        updateFooterLogo();
+        updateLogo(savedTheme);
+      });
 
-        // Yükleme ekranını kapat
-        window.addEventListener("load", () => {
-            document.getElementById("loader").style.display = "none";
-        });
+      // Yükleme ekranını kapat
+      window.addEventListener("load", () => {
+        document.getElementById("loader").style.display = "none";
+      });
     </script>
-</body>
+  </body>
 </html>

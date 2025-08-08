@@ -132,7 +132,7 @@ img {
   flex-direction: column;
   cursor: pointer;
   gap: 5px;
-  margin-left: 15px;
+  margin-left: auto;
 }
 
 .nav-toggle span {
@@ -140,6 +140,13 @@ img {
   height: 3px;
   background: var(--text);
   transition: 0.3s;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
 }
 
 /* Hero bölümü */
@@ -507,39 +514,50 @@ footer {
 /* Mobil uyumluluk */
 @media (max-width: 768px) {
   .nav-links {
-    display: none;
-    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    left: 0;
     width: 100%;
-    margin-top: 10px;
+    background-color: var(--secondary);
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+    z-index: 999;
   }
+
   .nav-links.active {
-    display: flex;
+    max-height: 500px; /* Menü içeriği kadar yükseklik */
+    opacity: 1;
+    visibility: visible;
   }
+
   .nav-toggle {
     display: flex;
-  }
-
-  .hero h1 {
-    font-size: 2rem;
-  }
-
-  .product-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .cart-item {
     flex-direction: column;
-    align-items: flex-start;
+    gap: 5px;
+    cursor: pointer;
   }
 
-  .cart-item-quantity {
-    margin: 10px 0;
+  .nav-links li a {
+    background-color: transparent !important;
+    color: var(--text) !important;
+    padding: 10px 0;
   }
 
-  .checkout-wrapper {
-    flex-direction: column;
+  .nav-links li a:hover {
+    background-color: transparent !important;
+    color: var(--text) !important;
   }
 }
+
+
+
 
 /* Alışverişe devam et ve ödemeye geç buton stilleri ve konumları */
 .checkout-btn,
@@ -668,7 +686,7 @@ footer {
   border: 1px solid #aaa;
   border-radius: 6px;
   background-color: #f9f9f9;
-  color: #fff;
+  color: var(--text-color);
 }
 
 /* Karanlık tema için uyarlama */
@@ -693,8 +711,6 @@ body.dark #card-info input {
   border-radius: 8px;
   cursor: pointer;
   transition: var(--transition);
-
-
 }
 
 .complete-order-btn:hover {
@@ -749,4 +765,13 @@ body.dark #card-info {
     transform: translateX(100%);
   }
 }
+
+
+
+
+
+
+
+
+
 
