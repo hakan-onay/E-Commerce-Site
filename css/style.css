@@ -766,3 +766,89 @@ body.dark #card-info {
     transform: translateX(100%);
   }
 }
+
+/* Sepet counter için stil ayarları */
+.cart-count {
+  background-color: var(--primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-left: 4px;
+  display: inline-block;
+  min-width: 18px;
+  text-align: center;
+}
+
+body.dark .cart-count {
+  background-color: var(--primary-hover);
+}
+
+
+/** Sipariş Onayı Alanı */
+.confirmation-container {
+  max-width: 720px;
+  margin: 60px auto;
+  background: var(--secondary);
+  color: var(--text-color);
+  border-radius: 16px;
+  box-shadow: var(--box-shadow);
+  padding: 28px;
+  text-align: center;
+}
+
+.confirmation-container h1 {
+  font-size: 2rem; 
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--primary);
+}
+
+.confirmation-card {
+  text-align: left;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  margin: 16px 0 24px;
+  line-height: 1.8;
+  font-size: 1rem; 
+  font-weight: 500; 
+}
+
+.confirmation-card strong {
+  color: var(--primary);
+}
+
+.confirmation-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-primary, .btn-outline {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition), transform .2s ease;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
+
+.btn-outline {
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  background: transparent;
+}
+.btn-outline:hover { background: var(--primary); color: #fff; transform: translateY(-1px); }
+
+body.dark .confirmation-container { background: #2c2c2c; }

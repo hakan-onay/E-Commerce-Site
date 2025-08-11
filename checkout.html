@@ -32,7 +32,11 @@
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Anasayfa</a></li>
           <li><a href="products.html">Ürünler</a></li>
-          <li><a href="cart.html">Sepet</a></li>
+          <li>
+            <a href="cart.html">
+              Sepet <span id="cart-count" class="cart-count">0</span>
+            </a>
+          </li>
           <li><a href="profile.html">Profil</a></li>
           <li><a href="admin.html">Admin</a></li>
         </ul>
@@ -147,12 +151,48 @@
           : "assets/images/logos/logo_light.png";
       }
 
-      // Sayfa içeriği yüklenince tema ve form işlemleri
+      // Sepet rozeti
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const cartCountElement = document.getElementById("cart-count");
+        if (cartCountElement) {
+          cartCountElement.textContent = cart.length;
+        }
+      }
+
+      // Canlı sepet değişim dinleyicisi
+      (function () {
+        const _setItem = localStorage.setItem;
+        const _removeItem = localStorage.removeItem;
+
+        localStorage.setItem = function (key, value) {
+          const oldVal = localStorage.getItem(key);
+          _setItem.apply(this, arguments);
+          if (key === "cart" && oldVal !== value) {
+            window.dispatchEvent(new Event("cart-changed"));
+          }
+        };
+
+        localStorage.removeItem = function (key) {
+          _removeItem.apply(this, arguments);
+          if (key === "cart") {
+            window.dispatchEvent(new Event("cart-changed"));
+          }
+        };
+
+        // Farklı sekmede değişirse
+        window.addEventListener("storage", (e) => {
+          if (e.key === "cart") window.dispatchEvent(new Event("cart-changed"));
+        });
+      })();
+
+      // Sayfa içeriği yüklenince
       window.addEventListener("DOMContentLoaded", () => {
         const savedTheme = localStorage.getItem("theme") || "light";
         if (savedTheme === "dark") document.body.classList.add("dark");
         updateLogo(savedTheme);
         updateFooterLogo();
+        updateCartCount(); 
 
         // Siparişi onayla
         document
@@ -160,7 +200,6 @@
           .addEventListener("submit", (e) => {
             e.preventDefault();
 
-            // Kullanıcı bilgilerini al
             const firstName = document
               .getElementById("first-name")
               .value.trim();
@@ -173,7 +212,6 @@
             const paymentMethod =
               document.getElementById("payment-method").value;
 
-            // Zorunlu alan kontrolü
             if (
               !firstName ||
               !lastName ||
@@ -188,7 +226,6 @@
               return;
             }
 
-            // Kart ödemesi ise kart bilgilerini al ve kontrol et
             if (paymentMethod === "card") {
               const cardNumber = document
                 .getElementById("card-number")
@@ -202,12 +239,10 @@
               }
             }
 
-            // Sepet bilgileri al ve toplam hesapla
             const cart = JSON.parse(localStorage.getItem("cart")) || [];
             let total = 0;
             cart.forEach((item) => (total += item.price * item.quantity));
 
-            // Yeni sipariş objesi
             const newOrder = {
               id: Date.now(),
               name: firstName + " " + lastName,
@@ -220,31 +255,32 @@
               date: new Date().toISOString(),
             };
 
-            // Siparişi kaydet
             const orders = JSON.parse(localStorage.getItem("orders")) || [];
             orders.push(newOrder);
             localStorage.setItem("orders", JSON.stringify(orders));
+            localStorage.setItem("latestOrder", JSON.stringify(newOrder));
 
-            // Sepeti temizle ve ana sayfaya yönlendir
             localStorage.removeItem("cart");
-            alert("Siparişiniz başarıyla alındı. Teşekkür ederiz!");
-            window.location.href = "index.html";
+
+            window.location.href = "order-confirmation.html";
           });
       });
 
-      // Yüklenme tamamlanınca loader'ı gizle
+      // Loader gizle
       window.addEventListener("load", () => {
         document.getElementById("loader").style.display = "none";
       });
 
-      // Ödeme yöntemi seçildikçe kart bilgileri görünmesini kontrol et
+      // Ödeme yöntemi seçimi
       document
         .getElementById("payment-method")
         .addEventListener("change", function () {
-          const method = this.value;
           const cardInfo = document.getElementById("card-info");
-          cardInfo.style.display = method === "card" ? "block" : "none";
+          cardInfo.style.display = this.value === "card" ? "block" : "none";
         });
+
+      // Canlı sepet rozeti
+      window.addEventListener("cart-changed", updateCartCount);
     </script>
   </body>
 </html>

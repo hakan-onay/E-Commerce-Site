@@ -32,7 +32,11 @@
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Anasayfa</a></li>
           <li><a href="products.html">Ürünler</a></li>
-          <li><a href="cart.html">Sepet</a></li>
+          <li>
+            <a href="cart.html">
+              Sepet <span id="cart-count" class="cart-count">0</span>
+            </a>
+          </li>
           <li><a href="profile.html">Profil</a></li>
           <li><a href="admin.html">Admin</a></li>
         </ul>
@@ -204,56 +208,35 @@
       // Ürün rating etkileşimi
       document.addEventListener("DOMContentLoaded", () => {
         const stars = document.querySelectorAll(".star");
-
         stars.forEach((star) => {
           star.addEventListener("click", function () {
             const productCard = this.closest(".product-card");
             const ratingContainer = productCard.querySelector(".rating");
             const stars = ratingContainer.querySelectorAll(".star");
             const clickedIndex = Array.from(stars).indexOf(this);
-
             stars.forEach((s, index) => {
-              if (index <= clickedIndex) {
-                s.classList.add("selected");
-              } else {
-                s.classList.remove("selected");
-              }
+              if (index <= clickedIndex) s.classList.add("selected");
+              else s.classList.remove("selected");
             });
           });
         });
       });
 
-      // Tüm "Sepete Ekle" butonlarını seç
+      // Tüm "Sepete Ekle" butonları
       const addToCartButtons = document.querySelectorAll(".add-to-cart");
-
-      // Her butona tıklama olayını dinle
       addToCartButtons.forEach((button) => {
         button.addEventListener("click", () => {
-          // Ürün bilgilerini al
           const id = button.getAttribute("data-id");
           const name = button.getAttribute("data-name");
           const price = parseFloat(button.getAttribute("data-price"));
           const image = button.getAttribute("data-image");
 
-          // Sepet verisini localStorage’tan al veya boş dizi olarak başlat
           let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-          // Ürün zaten sepette varsa miktarını artır
           const existingItem = cart.find((item) => item.id === id);
-          if (existingItem) {
-            existingItem.quantity += 1;
-          } else {
-            cart.push({
-              id,
-              name,
-              price,
-              image,
-              quantity: 1,
-            });
-          }
+          if (existingItem) existingItem.quantity += 1;
+          else cart.push({ id, name, price, image, quantity: 1 });
 
-          // Güncellenmiş sepeti localStorage’a kaydet
-          localStorage.setItem("cart", JSON.stringify(cart));
+          localStorage.setItem("cart", JSON.stringify(cart)); // -> cart-changed tetikler
           showToast(`${name} sepete eklendi.`);
         });
       });
@@ -267,22 +250,16 @@
         function filterProducts() {
           const searchText = searchInput.value.toLowerCase();
           const selectedCategory = categorySelect.value;
-
           productCards.forEach((card) => {
             const productName = card
               .querySelector("h3")
               .textContent.toLowerCase();
             const category = card.getAttribute("data-category") || "all";
-
             const matchesSearch = productName.includes(searchText);
             const matchesCategory =
               selectedCategory === "all" || selectedCategory === category;
-
-            if (matchesSearch && matchesCategory) {
-              card.style.display = "block";
-            } else {
-              card.style.display = "none";
-            }
+            card.style.display =
+              matchesSearch && matchesCategory ? "block" : "none";
           });
         }
 
@@ -290,18 +267,53 @@
         categorySelect.addEventListener("change", filterProducts);
       });
 
-      // Toast mesajı gösterme fonksiyonu
+      // Toast mesajı
       function showToast(message) {
         const container = document.getElementById("toast-container");
         const toast = document.createElement("div");
         toast.className = "toast";
         toast.textContent = message;
         container.appendChild(toast);
-
-        setTimeout(() => {
-          toast.remove();
-        }, 3000); // 3 saniyede kaybolur
+        setTimeout(() => toast.remove(), 3000);
       }
+
+      // Sepet rozeti
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const cartCountElement = document.getElementById("cart-count");
+        if (cartCountElement) cartCountElement.textContent = cart.length;
+      }
+
+      // === Canlı rozet: localStorage değişimini aynı sekmede de yakala ===
+      (function () {
+        const _setItem = localStorage.setItem;
+        const _removeItem = localStorage.removeItem;
+
+        localStorage.setItem = function (key, value) {
+          const oldVal = localStorage.getItem(key);
+          _setItem.apply(this, arguments);
+          if (key === "cart" && oldVal !== value) {
+            window.dispatchEvent(new Event("cart-changed"));
+          }
+        };
+
+        localStorage.removeItem = function (key) {
+          _removeItem.apply(this, arguments);
+          if (key === "cart") {
+            window.dispatchEvent(new Event("cart-changed"));
+          }
+        };
+
+        // Farklı sekmede değişirse
+        window.addEventListener("storage", (e) => {
+          if (e.key === "cart") window.dispatchEvent(new Event("cart-changed"));
+        });
+      })();
+
+      // İlk yüklemede çiz
+      document.addEventListener("DOMContentLoaded", updateCartCount);
+      // Canlı rozet
+      window.addEventListener("cart-changed", updateCartCount);
     </script>
 
     <!-- Toast bildirimi -->

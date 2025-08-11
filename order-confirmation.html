@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikSepet | Sipariş Onayı</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+  <body>
+    <!-- Loader -->
+    <div id="loader">Yükleniyor...</div>
+
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li>
+            <a href="cart.html">
+              Sepet <span id="cart-count" class="cart-count">0</span>
+            </a>
+          </li>
+          <li><a href="profile.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+
+        <div class="nav-right">
+          <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+          <div class="nav-toggle" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- İçerik -->
+    <main class="confirmation-container">
+      <h1>Teşekkürler! Siparişiniz Alındı 🎉</h1>
+
+      <div class="confirmation-card">
+        <p><strong>Sipariş No:</strong> <span id="order-id">—</span></p>
+        <p><strong>Tarih:</strong> <span id="order-date">—</span></p>
+        <p>
+          <strong>Ödeme Yöntemi:</strong> <span id="payment-method">—</span>
+        </p>
+        <p><strong>Toplam Tutar:</strong> <span id="order-total">—</span></p>
+      </div>
+
+      <div class="confirmation-actions">
+        <a class="btn-primary" href="products.html">Alışverişe Devam Et</a>
+        <a class="btn-outline" href="profile.html">Siparişlerim</a>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+      </div>
+    </footer>
+
+    <!-- JS -->
+    <script>
+      // Loader
+      window.addEventListener("load", () => {
+        const loader = document.getElementById("loader");
+        if (loader) loader.style.display = "none";
+      });
+
+      // Tema / Menü
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
+        const theme = document.body.classList.contains("dark")
+          ? "dark"
+          : "light";
+        localStorage.setItem("theme", theme);
+        updateLogo(theme);
+        updateFooterLogo();
+      }
+      function toggleMenu() {
+        const nav = document.getElementById("navLinks");
+        if (nav) nav.classList.toggle("active");
+      }
+      function updateLogo(theme) {
+        const logo = document.getElementById("site-logo");
+        if (!logo) return;
+        logo.src =
+          theme === "dark"
+            ? "assets/images/logos/logo_dark.png"
+            : "assets/images/logos/logo_light.png";
+      }
+      function updateFooterLogo() {
+        const logo = document.getElementById("footer-logo");
+        if (!logo) return;
+        logo.src = document.body.classList.contains("dark")
+          ? "assets/images/logos/logo_dark.png"
+          : "assets/images/logos/logo_light.png";
+      }
+
+      // Util
+      const fmtTRY = (n) =>
+        new Intl.NumberFormat("tr-TR", {
+          style: "currency",
+          currency: "TRY",
+        }).format(n);
+      const safeParse = (k) => {
+        try {
+          return JSON.parse(localStorage.getItem(k) || "null");
+        } catch {
+          return null;
+        }
+      };
+
+      // Sepet rozeti
+      function updateCartCount() {
+        const cart = safeParse("cart") || [];
+        const el = document.getElementById("cart-count");
+        if (el) el.textContent = cart.length;
+      }
+
+      // Sepet değişince anında güncelle (aynı sekme + farklı sekme)
+      (function () {
+        const _setItem = localStorage.setItem;
+        const _removeItem = localStorage.removeItem;
+        localStorage.setItem = function (key, value) {
+          const oldVal = localStorage.getItem(key);
+          _setItem.apply(this, arguments);
+          if (key === "cart" && oldVal !== value)
+            window.dispatchEvent(new Event("cart-changed"));
+        };
+        localStorage.removeItem = function (key) {
+          _removeItem.apply(this, arguments);
+          if (key === "cart") window.dispatchEvent(new Event("cart-changed"));
+        };
+        window.addEventListener("storage", (e) => {
+          if (e.key === "cart") window.dispatchEvent(new Event("cart-changed"));
+        });
+      })();
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // Tema uygula
+        const savedTheme = localStorage.getItem("theme") || "light";
+        if (savedTheme === "dark") document.body.classList.add("dark");
+        updateLogo(savedTheme);
+        updateFooterLogo();
+
+        // Rozeti güncelle
+        updateCartCount();
+
+        // latestOrder’ı oku
+        const latest = safeParse("latestOrder");
+        if (!latest) {
+          // Direkt gelindiyse anasayfaya dön
+          window.location.href = "index.html";
+          return;
+        }
+
+        // Sipariş bilgilerini yazdır
+        const elId = (id) => document.getElementById(id);
+        const orderIdEl = elId("order-id");
+        const orderDateEl = elId("order-date");
+        const paymentEl = elId("payment-method");
+        const totalEl = elId("order-total");
+
+        if (orderIdEl) orderIdEl.textContent = latest.id;
+        if (orderDateEl)
+          orderDateEl.textContent = new Date(
+            latest.date || latest.createdAt
+          ).toLocaleString("tr-TR");
+        if (paymentEl)
+          paymentEl.textContent =
+            latest.paymentMethod === "cash" ? "Kapıda Ödeme" : "Kart ile Ödeme";
+        if (totalEl) totalEl.textContent = fmtTRY(latest.total);
+
+        // Tek seferlik gösterim: sayfa gösterildikten kısa süre sonra temizle
+        setTimeout(() => localStorage.removeItem("latestOrder"), 5000);
+      });
+
+      // Sepet rozetini canlı tut
+      window.addEventListener("cart-changed", updateCartCount);
+    </script>
+  </body>
+</html>

@@ -32,7 +32,11 @@
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Anasayfa</a></li>
           <li><a href="products.html">Ürünler</a></li>
-          <li><a href="cart.html">Sepet</a></li>
+          <li>
+            <a href="cart.html">
+              Sepet <span id="cart-count" class="cart-count">0</span>
+            </a>
+          </li>
           <li><a href="profile.html">Profil</a></li>
           <li><a href="admin.html">Admin</a></li>
         </ul>
@@ -86,7 +90,7 @@
         document.getElementById("navLinks").classList.toggle("active");
       }
 
-      // Tema değiştirme fonksiyonu
+      // Tema değiştirme
       function toggleTheme() {
         document.body.classList.toggle("dark");
         const theme = document.body.classList.contains("dark")
@@ -97,7 +101,7 @@
         updateLogo(theme);
       }
 
-      // Logoyu güncelle
+      // Logo güncelle
       function updateLogo(theme) {
         const logo = document.getElementById("site-logo");
         logo.src =
@@ -106,18 +110,55 @@
             : "assets/images/logos/logo_light.png";
       }
 
-      // Sayfa yüklendiğinde temayı uygula
+      // Sepet rozeti
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const cartCountElement = document.getElementById("cart-count");
+        if (cartCountElement) cartCountElement.textContent = cart.length;
+      }
+
+      // Canlı rozet: localStorage değişimini aynı sekmede de yakalar
+      (function () {
+        const _setItem = localStorage.setItem;
+        const _removeItem = localStorage.removeItem;
+
+        localStorage.setItem = function (key, value) {
+          const oldVal = localStorage.getItem(key);
+          _setItem.apply(this, arguments);
+          if (key === "cart" && oldVal !== value) {
+            window.dispatchEvent(new Event("cart-changed"));
+          }
+        };
+
+        localStorage.removeItem = function (key) {
+          _removeItem.apply(this, arguments);
+          if (key === "cart") {
+            window.dispatchEvent(new Event("cart-changed"));
+          }
+        };
+
+        // Farklı sekmede değişirse
+        window.addEventListener("storage", (e) => {
+          if (e.key === "cart") window.dispatchEvent(new Event("cart-changed"));
+        });
+      })();
+
+      // Sayfa yüklendiğinde temayı ve rozeti uygula
       window.addEventListener("DOMContentLoaded", () => {
         const savedTheme = localStorage.getItem("theme") || "light";
         if (savedTheme === "dark") document.body.classList.add("dark");
         updateFooterLogo();
         updateLogo(savedTheme);
+        updateCartCount(); // ilk çizim
       });
 
       // Yükleme ekranını kapat
       window.addEventListener("load", () => {
         document.getElementById("loader").style.display = "none";
       });
+
+      // Canlı rozet
+      window.addEventListener("cart-changed", updateCartCount);
     </script>
   </body>
 </html>

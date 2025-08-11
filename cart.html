@@ -31,7 +31,11 @@
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Anasayfa</a></li>
           <li><a href="products.html">Ürünler</a></li>
-          <li><a href="cart.html">Sepet</a></li>
+          <li>
+            <a href="cart.html">
+              Sepet <span id="cart-count" class="cart-count">0</span>
+            </a>
+          </li>
           <li><a href="profile.html">Profil</a></li>
           <li><a href="admin.html">Admin</a></li>
         </ul>
@@ -112,6 +116,41 @@
             : "assets/images/logos/logo_light.png";
       }
 
+      // Sepet rozeti (NAV)
+      function updateCartCount() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const cartCountElement = document.getElementById("cart-count");
+        if (cartCountElement) {
+          cartCountElement.textContent = cart.length;
+        }
+      }
+
+      // Canlı rozet: localStorage değişimini aynı sekmede de yakalar
+      (function () {
+        const _setItem = localStorage.setItem;
+        const _removeItem = localStorage.removeItem;
+
+        localStorage.setItem = function (key, value) {
+          const oldVal = localStorage.getItem(key);
+          _setItem.apply(this, arguments);
+          if (key === "cart" && oldVal !== value) {
+            window.dispatchEvent(new Event("cart-changed"));
+          }
+        };
+
+        localStorage.removeItem = function (key) {
+          _removeItem.apply(this, arguments);
+          if (key === "cart") {
+            window.dispatchEvent(new Event("cart-changed"));
+          }
+        };
+
+        // Farklı sekmede değişirse
+        window.addEventListener("storage", (e) => {
+          if (e.key === "cart") window.dispatchEvent(new Event("cart-changed"));
+        });
+      })();
+
       // Toplam tutarı hesapla ve UI'yi güncelle
       function updateCartTotal() {
         let total = 0;
@@ -153,11 +192,13 @@
         updateFooterLogo();
         updateLogo(savedTheme);
 
+        // NAV rozetini ilk yüklemede çiz
+        updateCartCount();
+
         // Sepet verisini localStorage'dan al
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const cartItemsContainer = document.getElementById("cart-items");
 
-        // Sepet boşsa uyarı göster
         if (cart.length === 0) {
           document.getElementById("cart-empty").style.display = "block";
           document.getElementById("cart-total").style.display = "none";
@@ -166,25 +207,25 @@
           // Sepetteki ürünleri HTML'e ekle
           cart.forEach((item) => {
             const cartItemHTML = `
-              <div class="cart-item" data-id="${item.id}" data-price="${
+          <div class="cart-item" data-id="${item.id}" data-price="${
               item.price
             }">
-                <img src="${item.image}" alt="${item.name}" />
-                <div class="cart-item-info">
-                  <div class="cart-item-title">${item.name}</div>
-                  <div class="cart-item-price">${item.price.toLocaleString(
-                    "tr-TR",
-                    { style: "currency", currency: "TRY" }
-                  )}</div>
-                  <div class="cart-item-quantity">
-                    <button class="qty-btn decrease">-</button>
-                    <span class="item-qty">${item.quantity}</span>
-                    <button class="qty-btn increase">+</button>
-                  </div>
-                </div>
-                <button class="cart-item-remove">Sil</button>
+            <img src="${item.image}" alt="${item.name}" />
+            <div class="cart-item-info">
+              <div class="cart-item-title">${item.name}</div>
+              <div class="cart-item-price">${item.price.toLocaleString(
+                "tr-TR",
+                { style: "currency", currency: "TRY" }
+              )}</div>
+              <div class="cart-item-quantity">
+                <button class="qty-btn decrease">-</button>
+                <span class="item-qty">${item.quantity}</span>
+                <button class="qty-btn increase">+</button>
               </div>
-            `;
+            </div>
+            <button class="cart-item-remove">Sil</button>
+          </div>
+        `;
             cartItemsContainer.insertAdjacentHTML("beforeend", cartItemHTML);
           });
           updateCartTotal();
@@ -203,7 +244,7 @@
             const itemIndex = cart.findIndex((item) => item.id === itemId);
             if (itemIndex !== -1) {
               cart[itemIndex].quantity = newQty;
-              localStorage.setItem("cart", JSON.stringify(cart));
+              localStorage.setItem("cart", JSON.stringify(cart)); 
             }
 
             updateCartTotal();
@@ -226,7 +267,7 @@
               const itemIndex = cart.findIndex((item) => item.id === itemId);
               if (itemIndex !== -1) {
                 cart[itemIndex].quantity = newQty;
-                localStorage.setItem("cart", JSON.stringify(cart));
+                localStorage.setItem("cart", JSON.stringify(cart)); 
               }
 
               updateCartTotal();
@@ -244,7 +285,7 @@
 
             const cart = JSON.parse(localStorage.getItem("cart")) || [];
             const updatedCart = cart.filter((item) => item.id !== itemId);
-            localStorage.setItem("cart", JSON.stringify(updatedCart));
+            localStorage.setItem("cart", JSON.stringify(updatedCart)); 
 
             updateCartTotal();
           });
@@ -253,7 +294,7 @@
         // Ödeme sayfasına yönlendir
         document
           .getElementById("checkout-btn")
-          .addEventListener("click", () => {
+          ?.addEventListener("click", () => {
             window.location.href = "checkout.html";
           });
       });
@@ -262,6 +303,9 @@
       window.addEventListener("load", () => {
         document.getElementById("loader").style.display = "none";
       });
+
+      // NAV rozeti canlı kalsın
+      window.addEventListener("cart-changed", updateCartCount);
     </script>
   </body>
 </html>
