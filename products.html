@@ -39,6 +39,7 @@
           </li>
           <li><a href="profile.html">Profil</a></li>
           <li><a href="admin.html">Admin</a></li>
+          <li id="auth-area"></li>
         </ul>
 
         <!-- Tema ve hamburger birlikte -->
@@ -157,7 +158,7 @@
       </div>
     </footer>
 
-    <!-- JavaScript kodları -->
+    <!-- JavaScript -->
     <script>
       // Footer logosunu güncelle
       function updateFooterLogo() {
@@ -172,7 +173,7 @@
         document.getElementById("navLinks").classList.toggle("active");
       }
 
-      // Tema değiştirme fonksiyonu
+      // Tema değiştirme
       function toggleTheme() {
         document.body.classList.toggle("dark");
         const theme = document.body.classList.contains("dark")
@@ -183,7 +184,7 @@
         updateLogo(theme);
       }
 
-      // Logoyu güncelle
+      // Logo güncelle
       function updateLogo(theme) {
         const logo = document.getElementById("site-logo");
         logo.src =
@@ -222,10 +223,18 @@
         });
       });
 
-      // Tüm "Sepete Ekle" butonları
+      // Tüm "Sepete Ekle" butonları (AUTH GUARD + ekleme)
       const addToCartButtons = document.querySelectorAll(".add-to-cart");
       addToCartButtons.forEach((button) => {
         button.addEventListener("click", () => {
+          // Giriş kontrolü
+          if (!localStorage.getItem("currentUserId")) {
+            const ret = encodeURIComponent(location.pathname);
+            location.href = `login.html?return=${ret}`;
+            return;
+          }
+
+          // Ürün bilgileri
           const id = button.getAttribute("data-id");
           const name = button.getAttribute("data-name");
           const price = parseFloat(button.getAttribute("data-price"));
@@ -250,14 +259,17 @@
         function filterProducts() {
           const searchText = searchInput.value.toLowerCase();
           const selectedCategory = categorySelect.value;
+
           productCards.forEach((card) => {
             const productName = card
               .querySelector("h3")
               .textContent.toLowerCase();
             const category = card.getAttribute("data-category") || "all";
+
             const matchesSearch = productName.includes(searchText);
             const matchesCategory =
               selectedCategory === "all" || selectedCategory === category;
+
             card.style.display =
               matchesSearch && matchesCategory ? "block" : "none";
           });
@@ -284,11 +296,10 @@
         if (cartCountElement) cartCountElement.textContent = cart.length;
       }
 
-      // === Canlı rozet: localStorage değişimini aynı sekmede de yakala ===
+      // Canlı rozet: localStorage değişimini yakalar
       (function () {
         const _setItem = localStorage.setItem;
         const _removeItem = localStorage.removeItem;
-
         localStorage.setItem = function (key, value) {
           const oldVal = localStorage.getItem(key);
           _setItem.apply(this, arguments);
@@ -296,27 +307,26 @@
             window.dispatchEvent(new Event("cart-changed"));
           }
         };
-
         localStorage.removeItem = function (key) {
           _removeItem.apply(this, arguments);
           if (key === "cart") {
             window.dispatchEvent(new Event("cart-changed"));
           }
         };
-
-        // Farklı sekmede değişirse
         window.addEventListener("storage", (e) => {
           if (e.key === "cart") window.dispatchEvent(new Event("cart-changed"));
         });
       })();
 
-      // İlk yüklemede çiz
+      // İlk yüklemede çiz + canlı tut
       document.addEventListener("DOMContentLoaded", updateCartCount);
-      // Canlı rozet
       window.addEventListener("cart-changed", updateCartCount);
     </script>
 
     <!-- Toast bildirimi -->
     <div id="toast-container"></div>
+
+    <!-- Auth -->
+    <script src="js/auth.js"></script>
   </body>
 </html>

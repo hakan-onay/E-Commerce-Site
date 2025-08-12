@@ -39,6 +39,7 @@
           </li>
           <li><a href="profile.html">Profil</a></li>
           <li><a href="admin.html">Admin</a></li>
+          <li id="auth-area"></li>
         </ul>
 
         <!-- Tema ve hamburger birlikte -->
@@ -103,6 +104,15 @@
       </form>
     </main>
 
+    <!-- Sipariş Özeti -->
+    <section id="order-summary" class="order-summary" aria-live="polite">
+      <h2>Sipariş Özeti</h2>
+      <div id="summary-list"></div>
+      <div class="summary-total">
+        <span>Toplam:</span> <strong id="summary-total">₺0,00</strong>
+      </div>
+    </section>
+
     <!-- Footer -->
     <footer>
       <div class="footer-content">
@@ -118,7 +128,13 @@
 
     <!-- JavaScript -->
     <script>
-      // Tema aç/kapa
+      // Loader
+      window.addEventListener("load", () => {
+        const loader = document.getElementById("loader");
+        if (loader) loader.style.display = "none";
+      });
+
+      // Tema / Menü
       function toggleTheme() {
         document.body.classList.toggle("dark");
         const theme = document.body.classList.contains("dark")
@@ -128,13 +144,9 @@
         updateLogo(theme);
         updateFooterLogo();
       }
-
-      // Mobil menü toggle
       function toggleMenu() {
         document.getElementById("navLinks").classList.toggle("active");
       }
-
-      // Logo güncelle
       function updateLogo(theme) {
         const logo = document.getElementById("site-logo");
         logo.src =
@@ -142,8 +154,6 @@
             ? "assets/images/logos/logo_dark.png"
             : "assets/images/logos/logo_light.png";
       }
-
-      // Footer logosunu güncelle
       function updateFooterLogo() {
         const logo = document.getElementById("footer-logo");
         logo.src = document.body.classList.contains("dark")
@@ -151,55 +161,71 @@
           : "assets/images/logos/logo_light.png";
       }
 
+      // Util
+      const fmtTRY = (n) =>
+        new Intl.NumberFormat("tr-TR", {
+          style: "currency",
+          currency: "TRY",
+        }).format(n);
+      const getCart = () => JSON.parse(localStorage.getItem("cart") || "[]");
+
       // Sepet rozeti
       function updateCartCount() {
-        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-        const cartCountElement = document.getElementById("cart-count");
-        if (cartCountElement) {
-          cartCountElement.textContent = cart.length;
-        }
+        const cart = getCart();
+        const el = document.getElementById("cart-count");
+        if (el) el.textContent = cart.length;
       }
 
-      // Canlı sepet değişim dinleyicisi
+      // Canlı rozet: localStorage değişimlerini yakala
       (function () {
         const _setItem = localStorage.setItem;
         const _removeItem = localStorage.removeItem;
-
         localStorage.setItem = function (key, value) {
           const oldVal = localStorage.getItem(key);
           _setItem.apply(this, arguments);
-          if (key === "cart" && oldVal !== value) {
+          if (key === "cart" && oldVal !== value)
             window.dispatchEvent(new Event("cart-changed"));
-          }
         };
-
         localStorage.removeItem = function (key) {
           _removeItem.apply(this, arguments);
-          if (key === "cart") {
-            window.dispatchEvent(new Event("cart-changed"));
-          }
+          if (key === "cart") window.dispatchEvent(new Event("cart-changed"));
         };
-
-        // Farklı sekmede değişirse
         window.addEventListener("storage", (e) => {
           if (e.key === "cart") window.dispatchEvent(new Event("cart-changed"));
         });
       })();
 
-      // Sayfa içeriği yüklenince
-      window.addEventListener("DOMContentLoaded", () => {
+      // Guard + tema + rozet
+      document.addEventListener("DOMContentLoaded", () => {
         const savedTheme = localStorage.getItem("theme") || "light";
         if (savedTheme === "dark") document.body.classList.add("dark");
         updateLogo(savedTheme);
         updateFooterLogo();
-        updateCartCount(); 
+        updateCartCount();
 
-        // Siparişi onayla
+        // Sepet boşsa ve/veya login yoksa engelle
+        const cart = getCart();
+        if (cart.length === 0) {
+          alert("Sepetiniz boş. Lütfen ürün ekleyin.");
+          window.location.href = "products.html";
+          return;
+        }
+        if (!localStorage.getItem("currentUserId")) {
+          const ret = encodeURIComponent(location.pathname);
+          window.location.href = `login.html?return=${ret}`;
+          return;
+        }
+
+        // Sipariş özetini çiz
+        renderOrderSummary();
+
+        // Form submit işlemi
         document
           .getElementById("checkout-form")
           .addEventListener("submit", (e) => {
             e.preventDefault();
 
+            // Kullanıcı bilgilerini al
             const firstName = document
               .getElementById("first-name")
               .value.trim();
@@ -212,6 +238,7 @@
             const paymentMethod =
               document.getElementById("payment-method").value;
 
+            // Zorunlu alan kontrolü
             if (
               !firstName ||
               !lastName ||
@@ -226,6 +253,7 @@
               return;
             }
 
+            // Kart ödemesi ise kart bilgilerini al ve kontrol et
             if (paymentMethod === "card") {
               const cardNumber = document
                 .getElementById("card-number")
@@ -233,18 +261,18 @@
               const expiry = document.getElementById("expiry").value.trim();
               const cvv = document.getElementById("cvv").value.trim();
 
-              if (!cardNumber || !expiry || !cvv) {
-                alert("Kart bilgilerini eksiksiz doldurun.");
-                return;
-              }
+              if (!validateCard(cardNumber, expiry, cvv)) return;
             }
 
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            // Sepetten toplam
+            const cart = getCart();
             let total = 0;
             cart.forEach((item) => (total += item.price * item.quantity));
 
+            // Yeni sipariş objesi
             const newOrder = {
               id: Date.now(),
+              userId: localStorage.getItem("currentUserId"), // user bağla
               name: firstName + " " + lastName,
               email,
               phone,
@@ -255,32 +283,125 @@
               date: new Date().toISOString(),
             };
 
-            const orders = JSON.parse(localStorage.getItem("orders")) || [];
+            // Siparişi kaydet
+            const orders = JSON.parse(localStorage.getItem("orders") || "[]");
             orders.push(newOrder);
             localStorage.setItem("orders", JSON.stringify(orders));
             localStorage.setItem("latestOrder", JSON.stringify(newOrder));
 
+            // Sepeti temizle ve onaya git
             localStorage.removeItem("cart");
-
             window.location.href = "order-confirmation.html";
           });
       });
 
-      // Loader gizle
-      window.addEventListener("load", () => {
-        document.getElementById("loader").style.display = "none";
-      });
-
-      // Ödeme yöntemi seçimi
+      // Ödeme yöntemi seçildikçe kart bilgileri görünmesini kontrol et
       document
         .getElementById("payment-method")
         .addEventListener("change", function () {
+          const method = this.value;
           const cardInfo = document.getElementById("card-info");
-          cardInfo.style.display = this.value === "card" ? "block" : "none";
+          cardInfo.style.display = method === "card" ? "block" : "none";
         });
 
-      // Canlı sepet rozeti
+      // Maskeleme + doğrulama
+      function luhnCheck(num) {
+        const s = (num || "").replace(/\s+/g, "");
+        let sum = 0,
+          alt = false;
+        for (let i = s.length - 1; i >= 0; i--) {
+          let n = parseInt(s[i], 10);
+          if (alt) {
+            n *= 2;
+            if (n > 9) n -= 9;
+          }
+          sum += n;
+          alt = !alt;
+        }
+        return sum % 10 === 0;
+      }
+      function validateCard(cardNumber, expiry, cvv) {
+        const num = (cardNumber || "").replace(/\s/g, "");
+        if (!num || num.length < 13 || !luhnCheck(num)) {
+          alert("Kart numarası geçersiz görünüyor. Lütfen kontrol edin.");
+          return false;
+        }
+        const [mm, yy] = (expiry || "").split("/");
+        const m = parseInt(mm, 10),
+          y = parseInt("20" + (yy || ""), 10);
+        if (!(m >= 1 && m <= 12) || !y) {
+          alert("Son kullanma tarihi hatalı. (AA/YY)");
+          return false;
+        }
+        if (!(cvv.length === 3 || cvv.length === 4)) {
+          alert("CVV 3 veya 4 haneli olmalı.");
+          return false;
+        }
+        return true;
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        const phone = document.getElementById("phone");
+        const cardNumber = document.getElementById("card-number");
+        const expiry = document.getElementById("expiry");
+        const cvv = document.getElementById("cvv");
+
+        if (phone) {
+          phone.addEventListener("input", () => {
+            let v = phone.value.replace(/\D/g, "").slice(0, 11);
+            if (v.length >= 4) v = v.slice(0, 4) + " " + v.slice(4);
+            if (v.length >= 8) v = v.slice(0, 9) + " " + v.slice(9);
+            if (v.length >= 11) v = v.slice(0, 12) + " " + v.slice(12);
+            phone.value = v;
+          });
+        }
+        if (cardNumber) {
+          cardNumber.addEventListener("input", () => {
+            let v = cardNumber.value.replace(/\D/g, "").slice(0, 19);
+            cardNumber.value = v.replace(/(.{4})/g, "$1 ").trim();
+          });
+        }
+        if (expiry) {
+          expiry.addEventListener("input", () => {
+            let v = expiry.value.replace(/\D/g, "").slice(0, 4);
+            if (v.length >= 3) v = v.slice(0, 2) + "/" + v.slice(2);
+            expiry.value = v;
+          });
+        }
+        if (cvv) {
+          cvv.addEventListener("input", () => {
+            cvv.value = cvv.value.replace(/\D/g, "").slice(0, 4);
+          });
+        }
+      });
+
+      // Sipariş özetini çiz
+      function renderOrderSummary() {
+        const listEl = document.getElementById("summary-list");
+        const totalEl = document.getElementById("summary-total");
+        if (!listEl || !totalEl) return;
+        const cart = getCart();
+        listEl.innerHTML = "";
+        let total = 0;
+        cart.forEach((item) => {
+          const line = item.price * item.quantity;
+          total += line;
+          const row = document.createElement("div");
+          row.className = "summary-item";
+          row.innerHTML = `
+            <div>${item.name}</div>
+            <div class="summary-qty">x${item.quantity}</div>
+            <div class="summary-line">${fmtTRY(line)}</div>
+          `;
+          listEl.appendChild(row);
+        });
+        totalEl.textContent = fmtTRY(total);
+      }
+
+      // Canlı rozet
       window.addEventListener("cart-changed", updateCartCount);
     </script>
+
+    <!-- Auth -->
+    <script src="js/auth.js"></script>
   </body>
 </html>
