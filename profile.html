@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikSepet | Profilim</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+
+  <body>
+    <!-- Loader -->
+    <div id="loader">Yükleniyor...</div>
+
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li>
+            <a href="cart.html"
+              >Sepet <span id="cart-count" class="cart-count">0</span></a
+            >
+          </li>
+          <li><a href="profile.html">Profil</a></li>
+        </ul>
+
+        <div class="nav-right">
+          <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+          <div class="nav-toggle" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Content -->
+    <main class="profile-container">
+      <div class="profile-header">
+        <h1>Profilim</h1>
+        <button class="logout-btn" id="logout-btn">Çıkış Yap</button>
+      </div>
+
+      <section class="profile-card" aria-live="polite">
+        <div class="profile-line">
+          <strong>Ad Soyad:</strong> <span id="u-name">—</span>
+        </div>
+        <div class="profile-line">
+          <strong>E-posta:</strong> <span id="u-email">—</span>
+        </div>
+      </section>
+
+      <section class="orders">
+        <h2>Sipariş Geçmişim</h2>
+        <div id="order-list" class="order-list"></div>
+        <div id="orders-empty" class="empty-state" style="display: none">
+          Henüz siparişiniz yok. <a href="products.html">Alışverişe başla</a> ✨
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+      // Loader
+      window.addEventListener("load", () => {
+        const l = document.getElementById("loader");
+        if (l) l.style.display = "none";
+      });
+
+      // Tema / Menü
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
+        const theme = document.body.classList.contains("dark")
+          ? "dark"
+          : "light";
+        localStorage.setItem("theme", theme);
+        updateLogo(theme);
+        updateFooterLogo();
+      }
+      function toggleMenu() {
+        document.getElementById("navLinks").classList.toggle("active");
+      }
+      function updateLogo(theme) {
+        const logo = document.getElementById("site-logo");
+        if (logo)
+          logo.src =
+            theme === "dark"
+              ? "assets/images/logos/logo_dark.png"
+              : "assets/images/logos/logo_light.png";
+      }
+      function updateFooterLogo() {
+        const logo = document.getElementById("footer-logo");
+        if (logo)
+          logo.src = document.body.classList.contains("dark")
+            ? "assets/images/logos/logo_dark.png"
+            : "assets/images/logos/logo_light.png";
+      }
+
+      // Util
+      const fmtTRY = (n) =>
+        new Intl.NumberFormat("tr-TR", {
+          style: "currency",
+          currency: "TRY",
+        }).format(n);
+      const safeParse = (k, d = null) => {
+        try {
+          return JSON.parse(
+            localStorage.getItem(k) || (d === null ? "null" : JSON.stringify(d))
+          );
+        } catch {
+          return d;
+        }
+      };
+
+      // Sepet rozeti
+      function updateCartCount() {
+        const cart = safeParse("cart", []);
+        const el = document.getElementById("cart-count");
+        if (el) el.textContent = cart.length;
+      }
+      // cart değişimleri (aynı sekme + farklı sekme)
+      (function () {
+        const _set = localStorage.setItem,
+          _rem = localStorage.removeItem;
+        localStorage.setItem = function (k, v) {
+          const o = localStorage.getItem(k);
+          _set.apply(this, arguments);
+          if (k === "cart" && o !== v)
+            window.dispatchEvent(new Event("cart-changed"));
+        };
+        localStorage.removeItem = function (k) {
+          _rem.apply(this, arguments);
+          if (k === "cart") window.dispatchEvent(new Event("cart-changed"));
+        };
+        window.addEventListener("storage", (e) => {
+          if (e.key === "cart") window.dispatchEvent(new Event("cart-changed"));
+        });
+      })();
+      window.addEventListener("cart-changed", updateCartCount);
+
+      // Guard + ilk kurulum
+      document.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        if (savedTheme === "dark") document.body.classList.add("dark");
+        updateLogo(savedTheme);
+        updateFooterLogo();
+        updateCartCount();
+
+        // Giriş kontrolü
+        const currentUserId = localStorage.getItem("currentUserId");
+        if (!currentUserId) {
+          const ret = encodeURIComponent(location.pathname);
+          location.href = `login.html?return=${ret}`;
+          return;
+        }
+
+        // Kullanıcı bilgileri
+        const users = safeParse("users", []);
+        const u = users.find((x) => String(x.id) === String(currentUserId));
+        if (!u) {
+          localStorage.removeItem("currentUserId");
+          location.href = "login.html";
+          return;
+        }
+        document.getElementById("u-name").textContent = u.name || "—";
+        document.getElementById("u-email").textContent = u.email || "—";
+
+        // Siparişleri listele
+        renderOrders(currentUserId);
+      });
+
+      function renderOrders(userId) {
+        const orders = safeParse("orders", []);
+        const mine = orders
+          .filter((o) => String(o.userId) === String(userId))
+          .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+
+        const wrap = document.getElementById("order-list");
+        const empty = document.getElementById("orders-empty");
+        if (!wrap) return;
+
+        wrap.innerHTML = "";
+        if (mine.length === 0) {
+          empty.style.display = "block";
+          return;
+        }
+        empty.style.display = "none";
+
+        mine.forEach((o) => {
+          const itemsCount = (o.items || []).reduce(
+            (acc, it) => acc + (it.quantity || 1),
+            0
+          );
+          const el = document.createElement("div");
+          el.className = "order-item";
+          el.innerHTML = `
+            <div class="order-info">
+              <div><strong>Sipariş No:</strong> ${o.id}</div>
+              <div><strong>Tarih:</strong> ${new Date(
+                o.date || o.createdAt
+              ).toLocaleString("tr-TR")}</div>
+              <div><strong>Ödeme:</strong> ${
+                o.paymentMethod === "cash" ? "Kapıda Ödeme" : "Kart"
+              }</div>
+              <div><strong>Ürün Adedi:</strong> ${itemsCount}</div>
+              <div><strong>Toplam:</strong> ${fmtTRY(o.total || 0)}</div>
+            </div>
+            <div class="order-actions">
+              <a href="order-confirmation.html" onclick="localStorage.setItem('latestOrder', JSON.stringify(${JSON.stringify(
+                {}
+              ).replace("{}", "o")}));">Detay</a>
+            </div>
+          `;
+          // küçük hack: detay linkine tıklanınca bu siparişi latestOrder yapacam
+          el.querySelector(".order-actions a").addEventListener(
+            "click",
+            (e) => {
+              e.preventDefault();
+              localStorage.setItem("latestOrder", JSON.stringify(o));
+              location.href = "order-confirmation.html";
+            }
+          );
+          wrap.appendChild(el);
+        });
+      }
+
+      // Çıkış
+      document.getElementById("logout-btn").addEventListener("click", () => {
+        localStorage.removeItem("currentUserId");
+        location.href = "index.html";
+      });
+    </script>
+  </body>
+</html>

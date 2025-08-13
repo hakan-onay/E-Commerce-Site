@@ -995,3 +995,109 @@ body.dark .confirmation-container {
 body.dark .register-container {
   background: #2c2c2c;
 }
+
+/* Profilim Sayfası */
+.profile-container {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 24px;
+  background: var(--secondary);
+  color: var(--text-color);
+  border-radius: 16px;
+  box-shadow: var(--box-shadow);
+}
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.profile-header h1 {
+  font-size: 1.8rem;
+  color: var(--primary);
+  margin: 0;
+}
+.logout-btn {
+  background: #ff5252;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity var(--transition), transform 0.2s ease;
+}
+.logout-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.profile-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  line-height: 1.8;
+}
+.profile-line {
+  margin: 6px 0;
+}
+
+.orders {
+  margin-top: 10px;
+}
+.orders h2 {
+  font-size: 1.3rem;
+  margin: 0 0 12px 0;
+  color: var(--text-color);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 8px;
+}
+.order-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.order-item {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.order-info {
+  line-height: 1.7;
+}
+.order-actions a {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  transition: background var(--transition), transform 0.2s ease;
+}
+.order-actions a:hover {
+  background: var(--primary);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 24px;
+  opacity: 0.85;
+}
+.empty-state a {
+  color: var(--primary);
+}
+
+body.dark .profile-container {
+  background: #2c2c2c;
+}
