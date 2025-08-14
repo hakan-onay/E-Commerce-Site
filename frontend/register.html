@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TikSepet | Kayıt Ol</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,7 +14,6 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
   </head>
-
   <body>
     <!-- Loader -->
     <div id="loader">Yükleniyor...</div>
@@ -28,7 +28,6 @@
             id="site-logo"
           />
         </a>
-
         <ul class="nav-links" id="navLinks">
           <li><a href="index.html">Anasayfa</a></li>
           <li><a href="products.html">Ürünler</a></li>
@@ -39,9 +38,7 @@
           </li>
           <li><a href="profile.html">Profil</a></li>
           <li><a href="admin.html">Admin</a></li>
-          <li id="auth-area"></li>
         </ul>
-
         <div class="nav-right">
           <button id="theme-toggle" class="theme-toggle" type="button">
             🌓
@@ -115,7 +112,8 @@
       </div>
     </footer>
 
-    <script src="js/app.js" type="module"></script>
-    <script src="js/register.js" type="module"></script>
+    <!-- Script sırası: global -> sayfa -->
+    <script src="js/main.js"></script>
+    <script type="module" src="js/register.js"></script>
   </body>
 </html>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TikSepet | Profilim</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,7 +14,6 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
   </head>
-
   <body>
     <!-- Loader -->
     <div id="loader">Yükleniyor...</div>
@@ -39,8 +39,10 @@
           <li><a href="profile.html">Profil</a></li>
         </ul>
         <div class="nav-right">
-          <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-          <div class="nav-toggle" onclick="toggleMenu()">
+          <button id="theme-toggle" class="theme-toggle" type="button">
+            🌓
+          </button>
+          <div id="hamburger" class="nav-toggle" role="button" tabindex="0">
             <span></span><span></span><span></span>
           </div>
         </div>
@@ -86,7 +88,7 @@
     </footer>
 
     <!-- Scriptler -->
-    <script src="js/app.js" type="module"></script>
-    <script src="js/profile.js"></script>
+    <script src="js/main.js"></script>
+    <script type="module" src="js/profile.js"></script>
   </body>
 </html>

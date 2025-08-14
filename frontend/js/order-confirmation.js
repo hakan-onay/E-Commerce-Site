@@ -32,13 +32,15 @@ document.addEventListener("DOMContentLoaded", () => {
   setText("order-id", latest.id);
   setText(
     "order-date",
-    new Date(latest.date || latest.createdAt).toLocaleString("tr-TR")
+    new Date(
+      latest.date || latest.createdAt || latest.created_at
+    ).toLocaleString("tr-TR")
   );
   setText(
     "payment-method",
     latest.paymentMethod === "cash" ? "Kapıda Ödeme" : "Kart ile Ödeme"
   );
-  setText("order-total", fmtTRY(latest.total));
+  setText("order-total", fmtTRY(latest.total ?? 0));
 
   // Tek seferlik gösterim – birkaç saniye sonra temizle
   setTimeout(() => localStorage.removeItem("latestOrder"), 5000);

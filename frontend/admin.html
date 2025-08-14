@@ -6,11 +6,8 @@
     <title>TikSepet | Admin Panel</title>
     <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
     <link rel="stylesheet" href="css/style.css" />
-    <style>
-      
-    </style>
   </head>
-  <body>
+  <body data-page="admin">
     <!-- Navbar -->
     <header>
       <nav class="navbar">
@@ -22,6 +19,7 @@
           />
         </a>
         <div class="nav-right">
+          <button id="theme-toggle" class="btn ghost" title="Tema">Tema</button>
           <span id="nav-username" class="muted"></span>
           <button id="logout-btn" class="btn ghost">Çıkış</button>
         </div>
@@ -87,27 +85,29 @@
             </select>
             <button id="btn-refresh-orders" class="btn ghost">Yenile</button>
           </div>
-          <table id="orders-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Kullanıcı</th>
-                <th>Tutar</th>
-                <th>Adres</th>
-                <th>Durum</th>
-                <th>Tarih</th>
-                <th class="right">İşlem</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-          <p id="orders-empty" class="muted hidden">Sipariş yok.</p>
+          <div class="table-wrap">
+            <table id="orders-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Kullanıcı</th>
+                  <th>Tutar</th>
+                  <th>Adres</th>
+                  <th>Durum</th>
+                  <th>Tarih</th>
+                  <th class="right">İşlem</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <p id="orders-empty" class="muted hidden">Sipariş yok.</p>
+          </div>
         </section>
       </div>
     </main>
 
     <!-- Ürün Modal -->
-    <div id="modal-backdrop" class="modal-backdrop">
+    <div id="modal-backdrop" class="modal-backdrop" style="display: none">
       <div class="modal">
         <h3 id="modal-title">Yeni Ürün</h3>
         <div class="form-grid">
@@ -147,10 +147,8 @@
       </div>
     </div>
 
-    <!-- Scriptler -->
-    <script src="js/api.js" type="module"></script>
-    <script src="js/auth.js" type="module"></script>
-    <script src="js/app.js" type="module"></script>
-    <script src="js/admin.js" type="module"></script>
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script type="module" src="js/admin.js"></script>
   </body>
 </html>

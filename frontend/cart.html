@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TikSepet | Sepet</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -40,10 +41,21 @@
         </ul>
 
         <div class="nav-right">
-          <button id="theme-toggle" class="theme-toggle" type="button">
+          <button
+            id="theme-toggle"
+            class="theme-toggle"
+            type="button"
+            title="Tema"
+          >
             🌓
           </button>
-          <div class="nav-toggle" id="hamburger" role="button" tabindex="0">
+          <div
+            class="nav-toggle"
+            id="hamburger"
+            role="button"
+            tabindex="0"
+            aria-label="Menüyü aç/kapat"
+          >
             <span></span><span></span><span></span>
           </div>
         </div>
@@ -82,10 +94,8 @@
       </div>
     </footer>
 
-    <!-- Modüler scriptler (sıra önemli) -->
-    <script src="js/api.js" type="module"></script>
-    <script src="js/auth.js" type="module"></script>
-    <script src="js/app.js" type="module"></script>
-    <script src="js/cart.js" type="module"></script>
+    <!-- Script sırası: global -> sayfa -->
+    <script src="js/main.js"></script>
+    <script src="js/cart.js"></script>
   </body>
 </html>

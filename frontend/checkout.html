@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TikSepet | Ödeme</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -41,10 +42,21 @@
         </ul>
 
         <div class="nav-right">
-          <button id="theme-toggle" class="theme-toggle" type="button">
+          <button
+            id="theme-toggle"
+            class="theme-toggle"
+            type="button"
+            title="Tema"
+          >
             🌓
           </button>
-          <div class="nav-toggle" id="hamburger" role="button" tabindex="0">
+          <div
+            class="nav-toggle"
+            id="hamburger"
+            role="button"
+            tabindex="0"
+            aria-label="Menüyü aç/kapat"
+          >
             <span></span><span></span><span></span>
           </div>
         </div>
@@ -54,7 +66,7 @@
     <!-- Ödeme Formu -->
     <main class="checkout-container">
       <h1>Ödeme Sayfası</h1>
-      <form id="checkout-form">
+      <form id="checkout-form" novalidate>
         <h2>Teslimat Bilgileri</h2>
 
         <label>Ad *</label>
@@ -62,7 +74,13 @@
         <label>Soyad *</label>
         <input type="text" id="last-name" required />
         <label>Telefon *</label>
-        <input type="tel" id="phone" required placeholder="5XX XXX XX XX" />
+        <input
+          type="tel"
+          id="phone"
+          required
+          placeholder="0534 896 84 32"
+          inputmode="numeric"
+        />
         <label>E-posta *</label>
         <input type="email" id="email" required />
         <label>İl *</label>
@@ -87,11 +105,17 @@
             id="card-number"
             maxlength="19"
             placeholder="XXXX XXXX XXXX XXXX"
+            inputmode="numeric"
           />
           <label>Son Kullanma Tarihi *</label>
-          <input type="text" id="expiry" placeholder="AA/YY" />
+          <input
+            type="text"
+            id="expiry"
+            placeholder="AA/YY"
+            inputmode="numeric"
+          />
           <label>CVV *</label>
-          <input type="text" id="cvv" maxlength="4" />
+          <input type="text" id="cvv" maxlength="4" inputmode="numeric" />
         </div>
 
         <button type="submit" class="complete-order-btn">
@@ -122,10 +146,8 @@
       </div>
     </footer>
 
-    <!-- Modüler scriptler (sıra önemli) -->
-    <script src="js/api.js" type="module"></script>
-    <script src="js/auth.js" type="module"></script>
-    <script src="js/app.js" type="module"></script>
-    <script src="js/checkout.js" type="module"></script>
+    <!-- Script sırası: global -> sayfa -->
+    <script src="js/main.js"></script>
+    <script src="js/checkout.js"></script>
   </body>
 </html>

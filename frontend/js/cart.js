@@ -1,5 +1,4 @@
-// js/cart.js
-import { updateCartCount } from "./app.js";
+"use strict";
 
 function fmtTry(n) {
   return (Number(n) || 0).toLocaleString("tr-TR", {
@@ -8,8 +7,20 @@ function fmtTry(n) {
   });
 }
 
+function getCart() {
+  try {
+    return JSON.parse(localStorage.getItem("cart") || "[]");
+  } catch {
+    return [];
+  }
+}
+function setCart(arr) {
+  // main.js içindeki localStorage patch'i sayesinde bu çağrı "cart-changed" event'ini tetikler
+  localStorage.setItem("cart", JSON.stringify(arr));
+}
+
 function renderCart() {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  const cart = getCart();
   const container = document.getElementById("cart-items");
   const empty = document.getElementById("cart-empty");
   const totalEl = document.getElementById("cart-total");
@@ -89,20 +100,18 @@ function updateCartTotal() {
 }
 
 function saveQty(itemId, newQty) {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  const cart = getCart();
   const idx = cart.findIndex((x) => String(x.id) === String(itemId));
   if (idx !== -1) {
     cart[idx].quantity = newQty;
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartCount();
+    setCart(cart); // tetikler
   }
 }
 
 function removeItem(itemId) {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+  const cart = getCart();
   const next = cart.filter((x) => String(x.id) !== String(itemId));
-  localStorage.setItem("cart", JSON.stringify(next));
-  updateCartCount();
+  setCart(next); // tetikler
 }
 
 function wireItemEvents() {
@@ -147,12 +156,11 @@ function wireItemEvents() {
   });
 }
 
-// Checkout
 function wireCheckout() {
   const btn = document.getElementById("checkout-btn");
   if (btn) {
     btn.addEventListener("click", () => {
-      // backend hazır olunca doğruca /checkout.html
+      // Giriş kontrolünü checkout sayfasında da yapacağız
       window.location.href = "checkout.html";
     });
   }
@@ -164,7 +172,5 @@ document.addEventListener("DOMContentLoaded", () => {
   wireCheckout();
 });
 
-// Dışarıdan sepet değişirse (başka sayfadan ürün eklendi/silindi)
-window.addEventListener("cart-changed", () => {
-  renderCart();
-});
+// Başka sayfadan sepet değişirse (ürün eklendi/silindi)
+window.addEventListener("cart-changed", renderCart);

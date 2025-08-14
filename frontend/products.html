@@ -4,12 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TikSepet | Ürünler</title>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Styles -->
     <link rel="stylesheet" href="css/style.css" />
     <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
   </head>
@@ -42,8 +46,17 @@
         </ul>
 
         <div class="nav-right">
-          <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
-          <div class="nav-toggle" onclick="toggleMenu()">
+          <!-- inline onclick kaldırıldı; main.js bunları id’lerden yakalıyor -->
+          <button id="theme-toggle" class="theme-toggle" title="Tema">
+            🌓
+          </button>
+          <div
+            id="hamburger"
+            class="nav-toggle"
+            role="button"
+            tabindex="0"
+            aria-label="Menüyü aç/kapat"
+          >
             <span></span><span></span><span></span>
           </div>
         </div>
@@ -66,75 +79,98 @@
           </select>
         </div>
 
-        <!-- Ürün Grid -->
+        <!-- Ürün Grid (statik örnekler) -->
         <div class="product-grid">
+          <!-- 1. Kart -->
           <div class="product-card" data-category="elektronik">
             <img src="assets/images/products/product1.jpg" alt="Akıllı Saat" />
-            <h3>Akıllı Saat</h3>
-            <p class="price">₺21.499,00</p>
-            <div class="rating">
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9734;</span>
-              <span class="star">&#9734;</span>
+
+            <div class="card-body">
+              <span class="badge">Yeni</span>
+              <h3>Akıllı Saat</h3>
+              <p class="price">₺21.499,00</p>
+              <div class="rating" aria-label="Ürün puanı">
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+                <span class="star">&#9734;</span>
+                <span class="star">&#9734;</span>
+              </div>
             </div>
-            <button
-              class="btn add-to-cart"
-              data-id="1"
-              data-name="Akıllı Saat"
-              data-price="21499.00"
-              data-image="assets/images/products/product1.jpg"
-            >
-              Sepete Ekle
-            </button>
+
+            <div class="card-footer">
+              <button
+                class="btn add-to-cart"
+                data-id="1"
+                data-name="Akıllı Saat"
+                data-price="21499.00"
+                data-image="assets/images/products/product1.jpg"
+              >
+                🛒 Sepete Ekle
+              </button>
+            </div>
           </div>
 
+          <!-- 2. Kart -->
           <div class="product-card" data-category="elektronik">
             <img src="assets/images/products/product2.jpg" alt="Kulaklık" />
-            <h3>Kulaklık</h3>
-            <p class="price">₺29.999,00</p>
-            <div class="rating">
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9734;</span>
+            <div class="card-body">
+              <span class="badge">Yeni</span>
+              <h3>Kulaklık</h3>
+              <p class="price">₺29.999,00</p>
+              <div class="rating" aria-label="Ürün puanı">
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+                <span class="star">&#9734;</span>
+              </div>
             </div>
-            <button
-              class="btn add-to-cart"
-              data-id="2"
-              data-name="Kulaklık"
-              data-price="29999.00"
-              data-image="assets/images/products/product2.jpg"
-            >
-              Sepete Ekle
-            </button>
+
+            <div class="card-footer">
+              <button
+                class="btn add-to-cart"
+                data-id="2"
+                data-name="Kulaklık"
+                data-price="29999.00"
+                data-image="assets/images/products/product2.jpg"
+              >
+                🛒 Sepete Ekle
+              </button>
+            </div>
           </div>
 
+          <!-- 3. Kart -->
           <div class="product-card" data-category="elektronik">
             <img
               src="assets/images/products/product3.jpg"
               alt="Bluetooth Hoparlör"
             />
-            <h3>Bluetooth Hoparlör</h3>
-            <p class="price">₺16.659,02</p>
-            <div class="rating">
-              <span class="star">&#9733;</span>
-              <span class="star">&#9733;</span>
-              <span class="star">&#9734;</span>
-              <span class="star">&#9734;</span>
-              <span class="star">&#9734;</span>
+
+            <div class="card-body">
+              <span class="badge">Yeni</span>
+              <h3>Bluetooth Hoparlör</h3>
+              <p class="price">₺16.659,02</p>
+              <div class="rating" aria-label="Ürün puanı">
+                <span class="star">&#9733;</span>
+                <span class="star">&#9733;</span>
+                <span class="star">&#9734;</span>
+                <span class="star">&#9734;</span>
+                <span class="star">&#9734;</span>
+              </div>
             </div>
-            <button
-              class="btn add-to-cart"
-              data-id="3"
-              data-name="Bluetooth Hoparlör"
-              data-price="16659.02"
-              data-image="assets/images/products/product3.jpg"
-            >
-              Sepete Ekle
-            </button>
+
+            <div class="card-footer">
+              <button
+                class="btn add-to-cart"
+                data-id="3"
+                data-name="Bluetooth Hoparlör"
+                data-price="16659.02"
+                data-image="assets/images/products/product3.jpg"
+              >
+                🛒 Sepete Ekle
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -149,16 +185,15 @@
           id="footer-logo"
           class="footer-logo"
         />
-        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi — created by Hakan Onay</p>
       </div>
     </footer>
 
     <!-- Toast -->
     <div id="toast-container"></div>
 
-    <!-- JS -->
+    <!-- JS: global sonra sayfa script’i -->
+    <script src="js/main.js"></script>
     <script src="js/products.js"></script>
-    <script src="js/app.js" type="module"></script>
-    <script src="js/auth.js"></script>
   </body>
 </html>

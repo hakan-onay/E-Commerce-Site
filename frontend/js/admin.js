@@ -1,12 +1,10 @@
-/* Admin Panel Script (DEMO destekli) */
+// js/admin.js (module)
 import { api } from "./api.js";
-import { me } from "./auth.js";
-
-const DEMO = new URLSearchParams(location.search).has("demo");
+import { requireAdmin, me, logout } from "./auth.js";
 
 let editingId = null;
 
-// Basit yardımcılar
+// Kısayollar
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
 const fmt = (n) =>
@@ -15,22 +13,18 @@ const fmt = (n) =>
     maximumFractionDigits: 2,
   });
 
-// --- Admin kontrolü (demo'da sahte admin) ---
-async function requireAdmin() {
+// ---- Admin Guard & Navbar ----
+async function initAdminGuard() {
   try {
-    let u;
-    if (DEMO) {
-      u = { id: 1, name: "Admin", email: "admin@test.com", role: "admin" };
-    } else {
-      u = await me(); // gerçek backend varsa
-    }
-
-    if (u?.role !== "admin") throw new Error("not-admin");
-
+    await requireAdmin();
     $("#admin-content").classList.remove("hidden");
     $("#admin-guard").classList.add("hidden");
+
+    const u = await me().catch(() => null);
     const navName = $("#nav-username");
-    if (navName) navName.textContent = `Admin: ${u.name || u.email}`;
+    if (u && navName) navName.textContent = `Admin: ${u.name || u.email}`;
+
+    $("#logout-btn")?.addEventListener("click", logout);
   } catch {
     $("#admin-content").classList.add("hidden");
     $("#admin-guard").classList.remove("hidden");
@@ -38,17 +32,14 @@ async function requireAdmin() {
   }
 }
 
-// -------- ÜRÜNLER --------
+/* ================== ÜRÜNLER ================== */
 async function fetchProducts() {
   const q = $("#search-input")?.value?.trim();
   const category = $("#category-filter")?.value || "";
   const params = new URLSearchParams();
   if (q) params.set("q", q);
   if (category) params.set("category", category);
-  return await api(`/api/products?${params.toString()}`, {
-    method: "GET",
-    auth: true,
-  });
+  return api(`/products?${params.toString()}`, { auth: true });
 }
 
 function renderProducts(rows = []) {
@@ -77,13 +68,15 @@ function renderProducts(rows = []) {
     tr.innerHTML = `
       <td>${p.id}</td>
       <td><strong>${p.title}</strong><div class="muted">${
-        p.description ? p.description.slice(0, 80) : ""
-      }</div></td>
+      p.description ? p.description.slice(0, 80) : ""
+    }</div></td>
       <td>${p.category || "-"}</td>
       <td class="right">₺${fmt(p.price)}</td>
       <td>${p.stock ?? 0}</td>
       <td>${p.rating ?? 0}</td>
-      <td>${p.image_url ? `<a href="${p.image_url}" target="_blank">Gör</a>` : "-"}</td>
+      <td>${
+        p.image_url ? `<a href="${p.image_url}" target="_blank">Gör</a>` : "-"
+      }</td>
       <td class="right">
         <button class="btn ghost btn-edit" data-id="${p.id}">Düzenle</button>
         <button class="btn warn btn-del" data-id="${p.id}">Sil</button>
@@ -92,7 +85,6 @@ function renderProducts(rows = []) {
     tb.appendChild(tr);
   }
 
-  // Events
   $$(".btn-edit").forEach((b) =>
     b.addEventListener("click", () => openEdit(b.dataset.id))
   );
@@ -103,8 +95,7 @@ function renderProducts(rows = []) {
 
 async function loadProducts() {
   try {
-    const rows = await fetchProducts();
-    renderProducts(rows);
+    renderProducts(await fetchProducts());
   } catch (e) {
     alert("Ürünleri çekerken hata: " + (e.message || e));
   }
@@ -159,13 +150,13 @@ async function saveProduct() {
       return;
     }
     if (editingId) {
-      await api(`/api/products/${editingId}`, {
+      await api(`/products/${editingId}`, {
         method: "PUT",
         auth: true,
         body: data,
       });
     } else {
-      await api("/api/products", { method: "POST", auth: true, body: data });
+      await api("/products", { method: "POST", auth: true, body: data });
     }
     await loadProducts();
     closeModal();
@@ -176,7 +167,7 @@ async function saveProduct() {
 
 async function openEdit(id) {
   try {
-    const rows = await api(`/api/products`, { auth: true });
+    const rows = await api(`/products`, { auth: true });
     const p = rows.find((r) => r.id == id);
     if (!p) return alert("Ürün bulunamadı");
     editingId = id;
@@ -191,19 +182,19 @@ async function openEdit(id) {
 async function delProduct(id) {
   if (!confirm(`#${id} ürün silinsin mi?`)) return;
   try {
-    await api(`/api/products/${id}`, { method: "DELETE", auth: true });
+    await api(`/products/${id}`, { method: "DELETE", auth: true });
     await loadProducts();
   } catch (e) {
     alert("Silme hatası: " + (e.message || e));
   }
 }
 
-// -------- SİPARİŞLER --------
+/* ================== SİPARİŞLER ================== */
 async function fetchOrders() {
   const status = $("#status-filter")?.value || "";
   const params = new URLSearchParams();
   if (status) params.set("status", status);
-  return await api(`/api/orders?${params.toString()}`, { auth: true });
+  return api(`/orders?${params.toString()}`, { auth: true });
 }
 
 function renderOrders(rows = []) {
@@ -225,17 +216,24 @@ function renderOrders(rows = []) {
       <td>${o.user_email || o.user_name || "-"}</td>
       <td>₺${fmt(o.total_amount)}</td>
       <td><div class="muted">${addr || "-"}</div><div class="muted">${
-        o.phone || ""
-      }</div></td>
+      o.phone || ""
+    }</div></td>
       <td><span class="badge">${o.status}</span></td>
       <td>${new Date(o.created_at).toLocaleString("tr-TR")}</td>
       <td class="right">
         <select class="order-status" data-id="${o.id}">
-          ${["pending","paid","shipped","delivered","cancelled"]
-            .map((s) => `<option value="${s}" ${o.status===s?"selected":""}>${s}</option>`)
+          ${["pending", "paid", "shipped", "delivered", "cancelled"]
+            .map(
+              (s) =>
+                `<option value="${s}" ${
+                  o.status === s ? "selected" : ""
+                }>${s}</option>`
+            )
             .join("")}
         </select>
-        <button class="btn ghost btn-update-status" data-id="${o.id}">Güncelle</button>
+        <button class="btn ghost btn-update-status" data-id="${
+          o.id
+        }">Güncelle</button>
       </td>
     `;
     tb.appendChild(tr);
@@ -247,7 +245,7 @@ function renderOrders(rows = []) {
       const sel = $(`select.order-status[data-id="${id}"]`);
       const status = sel.value;
       try {
-        await api(`/api/orders/${id}/status`, {
+        await api(`/orders/${id}/status`, {
           method: "POST",
           auth: true,
           body: { status },
@@ -262,19 +260,18 @@ function renderOrders(rows = []) {
 
 async function loadOrders() {
   try {
-    const rows = await fetchOrders();
-    renderOrders(rows);
+    renderOrders(await fetchOrders());
   } catch (e) {
     alert("Siparişleri çekerken hata: " + (e.message || e));
   }
 }
 
-// -------- INIT --------
+/* ================== INIT ================== */
 document.addEventListener("DOMContentLoaded", async () => {
   try {
-    await requireAdmin();
+    await initAdminGuard();
   } catch {
-    return; // admin değilse sayfa kilit
+    return;
   }
 
   // Ürünler
@@ -300,7 +297,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   $("#btn-refresh-orders").addEventListener("click", loadOrders);
   $("#status-filter").addEventListener("change", loadOrders);
 
-  // Başlangıç yüklemeleri
+  // İlk yüklemeler
   await loadProducts();
   await loadOrders();
 });

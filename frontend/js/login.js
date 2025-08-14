@@ -1,36 +1,76 @@
-// js/login.js
-"use strict";
+// js/login.js (module)
+import { api } from "./api.js";
+import { setAuth, getToken } from "./auth.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("login-form");
+function redirectAfterLogin() {
+  const params = new URLSearchParams(location.search);
+  const ret = params.get("return");
+  location.href = ret || "index.html";
+}
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    // Basit kullanıcı doğrulama (şimdilik localStorage)
+// Backend yoksa: yerel users[] ile fallback login
+function localFallbackLogin(email, password) {
+  try {
     const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const foundUser = users.find(
+    const found = users.find(
       (u) => u.email === email && u.password === password
     );
+    if (!found) return false;
 
-    if (!foundUser) {
-      alert("E-posta veya şifre hatalı!");
+    const user = {
+      id: found.id || Date.now(),
+      name: found.name || email.split("@")[0],
+      email,
+      role: found.role || "user",
+    };
+    const token = "local_" + Math.random().toString(36).slice(2);
+    setAuth({ user, token });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Zaten girişliyse yönlendir
+  if (getToken()) {
+    redirectAfterLogin();
+    return;
+  }
+
+  const form = document.getElementById("login-form");
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const email = document.getElementById("email").value.trim().toLowerCase(); // önemli: register ile aynı
+    const password = document.getElementById("password").value.trim();
+
+    if (!email || !password) {
+      alert("Lütfen e-posta ve şifre girin.");
       return;
     }
 
-    // Login kaydı
-    localStorage.setItem("currentUserId", foundUser.id);
+    submitBtn?.setAttribute("disabled", "true");
 
-    // return parametresi varsa oraya git
-    const params = new URLSearchParams(window.location.search);
-    const returnUrl = params.get("return");
-    if (returnUrl) {
-      window.location.href = returnUrl;
-    } else {
-      window.location.href = "index.html";
+    try {
+      // Önce gerçek API
+      const data = await api("/auth/login", {
+        method: "POST",
+        body: { email, password },
+      });
+      if (!data?.token || !data?.user) throw new Error("Eksik yanıt");
+      setAuth({ user: data.user, token: data.token });
+      redirectAfterLogin();
+    } catch {
+      // API başarısızsa local fallback
+      const ok = localFallbackLogin(email, password);
+      if (!ok) {
+        alert("E-posta veya şifre hatalı!");
+        submitBtn?.removeAttribute("disabled");
+        return;
+      }
+      redirectAfterLogin();
     }
   });
 });
