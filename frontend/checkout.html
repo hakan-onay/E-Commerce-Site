@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikSepet | Ödeme</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+  <body>
+    <div id="loader">Yükleniyor...</div>
+
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li>
+            <a href="cart.html"
+              >Sepet <span id="cart-count" class="cart-count">0</span></a
+            >
+          </li>
+          <li><a href="profile.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
+          <li id="auth-area"></li>
+        </ul>
+
+        <div class="nav-right">
+          <button id="theme-toggle" class="theme-toggle" type="button">
+            🌓
+          </button>
+          <div class="nav-toggle" id="hamburger" role="button" tabindex="0">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Ödeme Formu -->
+    <main class="checkout-container">
+      <h1>Ödeme Sayfası</h1>
+      <form id="checkout-form">
+        <h2>Teslimat Bilgileri</h2>
+
+        <label>Ad *</label>
+        <input type="text" id="first-name" required />
+        <label>Soyad *</label>
+        <input type="text" id="last-name" required />
+        <label>Telefon *</label>
+        <input type="tel" id="phone" required placeholder="5XX XXX XX XX" />
+        <label>E-posta *</label>
+        <input type="email" id="email" required />
+        <label>İl *</label>
+        <input type="text" id="city" required />
+        <label>İlçe *</label>
+        <input type="text" id="district" required />
+        <label>Açık Adres *</label>
+        <textarea id="address" rows="3" required></textarea>
+
+        <label for="payment-method">Ödeme Yöntemi *</label>
+        <select id="payment-method" required>
+          <option value="">Seçiniz</option>
+          <option value="card">Kart ile Ödeme</option>
+          <option value="cash">Kapıda Ödeme</option>
+        </select>
+
+        <div id="card-info" style="display: none; margin-top: 15px">
+          <h3>Kart Bilgileri</h3>
+          <label>Kart Numarası *</label>
+          <input
+            type="text"
+            id="card-number"
+            maxlength="19"
+            placeholder="XXXX XXXX XXXX XXXX"
+          />
+          <label>Son Kullanma Tarihi *</label>
+          <input type="text" id="expiry" placeholder="AA/YY" />
+          <label>CVV *</label>
+          <input type="text" id="cvv" maxlength="4" />
+        </div>
+
+        <button type="submit" class="complete-order-btn">
+          Siparişi Tamamla
+        </button>
+      </form>
+    </main>
+
+    <!-- Sipariş Özeti -->
+    <section id="order-summary" class="order-summary" aria-live="polite">
+      <h2>Sipariş Özeti</h2>
+      <div id="summary-list"></div>
+      <div class="summary-total">
+        <span>Toplam:</span> <strong id="summary-total">₺0,00</strong>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+      </div>
+    </footer>
+
+    <!-- Modüler scriptler (sıra önemli) -->
+    <script src="js/api.js" type="module"></script>
+    <script src="js/auth.js" type="module"></script>
+    <script src="js/app.js" type="module"></script>
+    <script src="js/checkout.js" type="module"></script>
+  </body>
+</html>

@@ -1,3 +1,40 @@
+import { api } from "./api.js";
+const DEMO = new URLSearchParams(location.search).has("demo");
+
+export async function login(email, password) {
+  if (DEMO) {
+    localStorage.setItem("token", "demo-token");
+    return "demo-token";
+  }
+  const { token } = await api("/api/auth/login", {
+    method: "POST",
+    body: { email, password },
+  });
+  localStorage.setItem("token", token);
+  return token;
+}
+
+export async function registerUser(data) {
+  if (DEMO) {
+    localStorage.setItem("token", "demo-token");
+    return "demo-token";
+  }
+  const { token } = await api("/api/auth/register", {
+    method: "POST",
+    body: data,
+  });
+  localStorage.setItem("token", token);
+  return token;
+}
+
+export async function me() {
+  return await api("/api/auth/me", { auth: true }); // demoApi bu çağrıyı mock’luyor
+}
+
+export function logout() {
+  localStorage.removeItem("token");
+}
+
 /* Local Storage Anahtarları */
 const LS_USERS = "users";
 const LS_CURRENT = "currentUserId";

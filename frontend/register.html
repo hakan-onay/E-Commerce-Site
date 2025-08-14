@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikSepet | Kayıt Ol</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+
+  <body>
+    <!-- Loader -->
+    <div id="loader">Yükleniyor...</div>
+
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li>
+            <a href="cart.html"
+              >Sepet <span id="cart-count" class="cart-count">0</span></a
+            >
+          </li>
+          <li><a href="profile.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
+          <li id="auth-area"></li>
+        </ul>
+
+        <div class="nav-right">
+          <button id="theme-toggle" class="theme-toggle" type="button">
+            🌓
+          </button>
+          <div id="hamburger" class="nav-toggle" role="button" tabindex="0">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Content -->
+    <main>
+      <div class="register-container">
+        <h1>Kayıt Ol</h1>
+        <form id="register-form" novalidate>
+          <label for="name">Ad Soyad</label>
+          <input
+            type="text"
+            id="name"
+            placeholder="Adınız Soyadınız"
+            required
+          />
+
+          <label for="email">E-posta</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="ornek@mail.com"
+            required
+          />
+
+          <label for="password">Şifre</label>
+          <input
+            type="password"
+            id="password"
+            placeholder="En az 6 karakter"
+            minlength="6"
+            required
+          />
+
+          <label for="password2">Şifre (Tekrar)</label>
+          <input
+            type="password"
+            id="password2"
+            placeholder="Şifrenizi tekrar girin"
+            minlength="6"
+            required
+          />
+
+          <small id="form-hint"
+            >Kaydolduktan sonra otomatik giriş yapılacak.</small
+          >
+
+          <button type="submit">Hesap Oluştur</button>
+          <p>Zaten hesabın var mı? <a href="login.html">Giriş Yap</a></p>
+        </form>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+      </div>
+    </footer>
+
+    <script src="js/app.js" type="module"></script>
+    <script src="js/register.js" type="module"></script>
+  </body>
+</html>

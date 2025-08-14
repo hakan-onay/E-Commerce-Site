@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikSepet | Profilim</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+
+  <body>
+    <!-- Loader -->
+    <div id="loader">Yükleniyor...</div>
+
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li>
+            <a href="cart.html"
+              >Sepet <span id="cart-count" class="cart-count">0</span></a
+            >
+          </li>
+          <li><a href="profile.html">Profil</a></li>
+        </ul>
+        <div class="nav-right">
+          <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+          <div class="nav-toggle" onclick="toggleMenu()">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Profil -->
+    <main class="profile-container">
+      <div class="profile-header">
+        <h1>Profilim</h1>
+        <button class="logout-btn" id="logout-btn">Çıkış Yap</button>
+      </div>
+
+      <section class="profile-card" aria-live="polite">
+        <div class="profile-line">
+          <strong>Ad Soyad:</strong> <span id="u-name">—</span>
+        </div>
+        <div class="profile-line">
+          <strong>E-posta:</strong> <span id="u-email">—</span>
+        </div>
+      </section>
+
+      <section class="orders">
+        <h2>Sipariş Geçmişim</h2>
+        <div id="order-list" class="order-list"></div>
+        <div id="orders-empty" class="empty-state" style="display: none">
+          Henüz siparişiniz yok. <a href="products.html">Alışverişe başla</a> ✨
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+      </div>
+    </footer>
+
+    <!-- Scriptler -->
+    <script src="js/app.js" type="module"></script>
+    <script src="js/profile.js"></script>
+  </body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikSepet | Giriş Yap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+  <body>
+    <!-- Loader -->
+    <div id="loader">Yükleniyor...</div>
+
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
+        </a>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li>
+            <a href="cart.html">
+              Sepet <span id="cart-count" class="cart-count">0</span>
+            </a>
+          </li>
+          <li><a href="profile.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+        <div class="nav-right">
+          <button id="theme-toggle" class="theme-toggle">🌓</button>
+          <div id="hamburger" class="nav-toggle">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Login Form -->
+    <main>
+      <div class="login-container">
+        <h1>Giriş Yap</h1>
+        <form id="login-form">
+          <label for="email">E-posta</label>
+          <input
+            type="email"
+            id="email"
+            required
+            placeholder="ornek@mail.com"
+          />
+
+          <label for="password">Şifre</label>
+          <input
+            type="password"
+            id="password"
+            required
+            placeholder="••••••••"
+          />
+
+          <button type="submit">Giriş Yap</button>
+        </form>
+        <p>Hesabın yok mu? <a href="register.html">Kayıt Ol</a></p>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+      </div>
+    </footer>
+
+    <!-- Ortak JS -->
+    <script src="js/app.js" type="module"></script>
+    <!-- Sayfaya özel JS -->
+    <script src="js/login.js" type="module"></script>
+  </body>
+</html>

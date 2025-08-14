@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TikSepet | Sipariş Onayı</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" type="image/x-icon" href="assets/favicon/favicon.ico" />
+  </head>
+  <body>
+    <!-- Loader -->
+    <div id="loader">Yükleniyor...</div>
+
+    <!-- Navbar -->
+    <header>
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img
+            src="assets/images/logos/logo_light.png"
+            alt="TikSepet"
+            id="site-logo"
+          />
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+          <li><a href="index.html">Anasayfa</a></li>
+          <li><a href="products.html">Ürünler</a></li>
+          <li>
+            <a href="cart.html"
+              >Sepet <span id="cart-count" class="cart-count">0</span></a
+            >
+          </li>
+          <li><a href="profile.html">Profil</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+
+        <div class="nav-right">
+          <button id="theme-toggle" class="theme-toggle" type="button">
+            🌓
+          </button>
+          <div id="hamburger" class="nav-toggle" role="button" tabindex="0">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- İçerik -->
+    <main class="confirmation-container">
+      <h1>Teşekkürler! Siparişiniz Alındı 🎉</h1>
+
+      <div class="confirmation-card">
+        <p><strong>Sipariş No:</strong> <span id="order-id">—</span></p>
+        <p><strong>Tarih:</strong> <span id="order-date">—</span></p>
+        <p>
+          <strong>Ödeme Yöntemi:</strong> <span id="payment-method">—</span>
+        </p>
+        <p><strong>Toplam Tutar:</strong> <span id="order-total">—</span></p>
+      </div>
+
+      <div class="confirmation-actions">
+        <a class="btn-primary" href="products.html">Alışverişe Devam Et</a>
+        <a class="btn-outline" href="profile.html">Siparişlerim</a>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <img
+          src="assets/images/logos/logo_light.png"
+          alt="TikSepet Logo"
+          id="footer-logo"
+          class="footer-logo"
+        />
+        <p>&copy; 2025 TikSepet E-Ticaret Sitesi created by Hakan Onay</p>
+      </div>
+    </footer>
+
+    <!-- Modüler scriptler -->
+    <script src="js/app.js" type="module"></script>
+    <script src="js/order-confirmation.js" type="module"></script>
+  </body>
+</html>
